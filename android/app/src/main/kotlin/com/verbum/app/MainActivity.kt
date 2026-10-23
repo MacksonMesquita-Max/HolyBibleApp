@@ -1,4 +1,4 @@
-package com.holybible.holy_bible_app
+package com.verbum.app
 
 import io.flutter.embedding.android.FlutterActivity
 

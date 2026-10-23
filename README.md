@@ -1,4 +1,4 @@
-# holy_bible_app
+# Verbum - Bíblia Sagrada
 
 A new Flutter project.
 
