@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import 'constants/assets.dart';
 import 'theme/app_theme.dart';
 
 /// Widget raiz da aplicacao: define tema e rota inicial.
@@ -25,8 +27,15 @@ class _PlaceholderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Verbum - Bíblia Sagrada')),
-      body: const Center(
-        child: Text('Ambiente pronto para desenvolvimento.'),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(AppAssets.logo, width: 160, height: 160),
+            const SizedBox(height: 24),
+            const Text('Ambiente pronto para desenvolvimento.'),
+          ],
+        ),
       ),
     );
   }

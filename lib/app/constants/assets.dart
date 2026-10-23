@@ -2,7 +2,6 @@
 class AppAssets {
   const AppAssets._();
 
-  static const String imagesPath = 'assets/images';
-  static const String iconsPath = 'assets/icons';
-  static const String logo = '$imagesPath/logo.png';
+  static const String assetsPath = 'lib/app/assets';
+  static const String logo = '$assetsPath/verbum-logo.svg';
 }

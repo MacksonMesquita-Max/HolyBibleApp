@@ -38,6 +38,7 @@ dependencies:
   # Cliente HTTP para requisições de rede.
   dio: ^5.9.0
   google_fonts: ^8.2.1
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -60,6 +62,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - lib/app/assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -91,3 +96,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Geracao do icone do aplicativo (flutter_launcher_icons).
+# Rodar com: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "lib/app/assets/verbum-logo.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
