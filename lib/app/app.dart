@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'theme/app_theme.dart';
 
-/// Widget raiz da aplicacao.
-///
-/// Concentra a configuracao global (tema e rota inicial). As telas reais
-/// devem ser implementadas dentro de `features/`.
-class HolyBibleApp extends StatelessWidget {
-  const HolyBibleApp({super.key});
+/// Widget raiz da aplicacao: define tema e rota inicial.
+class VerbumApp extends StatelessWidget {
+  const VerbumApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bíblia Sagrada',
+      title: 'Verbum - Bíblia Sagrada',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       home: const _PlaceholderPage(),
@@ -20,14 +17,14 @@ class HolyBibleApp extends StatelessWidget {
   }
 }
 
-/// Tela temporaria exibida enquanto as features nao sao implementadas.
+/// Tela temporaria exibida enquanto as telas reais nao existem em `features/`.
 class _PlaceholderPage extends StatelessWidget {
   const _PlaceholderPage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bíblia Sagrada')),
+      appBar: AppBar(title: const Text('Verbum - Bíblia Sagrada')),
       body: const Center(
         child: Text('Ambiente pronto para desenvolvimento.'),
       ),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'app_colors.dart';
+import 'app_text_styles.dart';
 
-/// Tema visual padrao da aplicacao.
 class AppTheme {
   const AppTheme._();
 
-  /// Cor semente usada para gerar o esquema de cores.
-  static const Color seedColor = Colors.brown;
-
-  /// Tema claro da aplicacao.
   static ThemeData get light => ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
+        textTheme: AppTextStyles.base,
       );
 }

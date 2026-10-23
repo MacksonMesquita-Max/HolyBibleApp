@@ -2,17 +2,14 @@ import 'package:dio/dio.dart';
 
 /// Cliente HTTP central da aplicacao, baseado no Dio.
 ///
-/// Concentra a configuracao de base URL, timeouts e interceptadores,
-/// servindo como ponto unico de configuracao das requisicoes de rede.
+/// Concentra a configuracao de base URL, timeouts e interceptadores.
 class DioClient {
   DioClient({String? baseUrl}) : _dio = _buildDio(baseUrl ?? defaultBaseUrl);
 
-  /// URL base padrao das requisicoes.
   static const String defaultBaseUrl = 'https://bible-api.com';
 
   final Dio _dio;
 
-  /// Instancia do Dio configurada para uso na aplicacao.
   Dio get dio => _dio;
 
   static Dio _buildDio(String baseUrl) {

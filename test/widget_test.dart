@@ -1,13 +1,11 @@
-// Teste de smoke basico do aplicativo.
-
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:holy_bible_app/app/app.dart';
+import 'package:verbum/app/app.dart';
 
 void main() {
   testWidgets('A tela inicial e renderizada', (WidgetTester tester) async {
-    await tester.pumpWidget(const HolyBibleApp());
+    await tester.pumpWidget(const VerbumApp());
 
-    expect(find.text('Bíblia Sagrada'), findsWidgets);
+    expect(find.text('Verbum - Bíblia Sagrada'), findsWidgets);
   });
 }
