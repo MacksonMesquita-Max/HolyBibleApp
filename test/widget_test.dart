@@ -6,6 +6,7 @@ void main() {
   testWidgets('A tela inicial e renderizada', (WidgetTester tester) async {
     await tester.pumpWidget(const VerbumApp());
 
-    expect(find.text('Verbum - Bíblia Sagrada'), findsWidgets);
+    expect(find.text('Continue sua jornada.'), findsOneWidget);
+    expect(find.text('Entrar no Verbum'), findsOneWidget);
   });
 }
