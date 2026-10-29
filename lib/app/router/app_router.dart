@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../features/authentication/data/repositories/mock_authentication_repository.dart';
-import '../../features/authentication/presentation/pages/login_page.dart';
+import '../di/app_dependencies.dart';
 import '../../features/home_screen/presentation/pages/home_page.dart';
 
 class AppRouter {
-  const AppRouter._();
+  AppRouter(this._dependencies);
+
+  final AppDependencies _dependencies;
 
   static const String loginRoute = '/';
   static const String homeRoute = '/home';
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+  Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeRoute:
         return MaterialPageRoute<void>(
@@ -20,9 +21,7 @@ class AppRouter {
       case loginRoute:
       default:
         return MaterialPageRoute<void>(
-          builder: (_) => LoginPage(
-            authenticationRepository: MockAuthenticationRepository(),
-          ),
+          builder: (_) => _dependencies.authenticationModule.buildLoginPage(),
           settings: settings,
         );
     }

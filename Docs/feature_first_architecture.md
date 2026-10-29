@@ -31,9 +31,10 @@ lib/
 ├── main.dart
 ├── app/
 │   ├── app.dart
+│   ├── di/
 │   ├── router/
 │   ├── theme/
-│   └── config/
+│   └── constants/
 │
 ├── core/
 │   ├── domain/
@@ -70,16 +71,19 @@ lib/
 │
 └── features/
     ├── autenticacao/
+    │   ├── autenticacao_module.dart
     │   ├── presentation/
     │   ├── application/
     │   ├── domain/
     │   └── data/
     ├── usuarios/
+    │   ├── usuarios_module.dart
     │   ├── presentation/
     │   ├── application/
     │   ├── domain/
     │   └── data/
     └── produtos/
+        ├── produtos_module.dart
         ├── presentation/
         ├── application/
         ├── domain/
@@ -227,6 +231,7 @@ Exemplo de uma feature de produtos:
 ``` text
 features/
 └── produtos/
+    ├── produtos_module.dart
     ├── presentation/
     │   ├── pages/
     │   │   ├── produtos_page.dart
@@ -273,6 +278,29 @@ features/
 Essa divisão combina Feature-First com Clean Architecture. Os nomes das
 pastas podem variar, desde que as responsabilidades e a direção das
 dependências sejam preservadas.
+
+### 5.1. Ponto de entrada público da feature
+
+Além das camadas internas, uma feature pode expor um arquivo-raiz com
+seu ponto de entrada público, por exemplo:
+
+-   `authentication_module.dart`
+-   `home_screen_module.dart`
+-   `library_module.dart`
+
+Esse arquivo funciona como uma fachada da feature para a camada `app/`.
+Ele pode centralizar:
+
+-   criação de páginas públicas da funcionalidade;
+-   composição das dependências internas da feature;
+-   builders ou factories públicos;
+-   registro de rotas da própria feature, quando necessário.
+
+**Regra prática:** o aplicativo deve preferir importar esse módulo
+público em vez de acessar arquivos internos aleatórios da feature.
+
+Assim, a feature continua encapsulada e o `app/` passa a depender de uma
+API mais estável e explícita.
 
 ## 6. Camadas internas: DDD + Clean Architecture
 
@@ -532,6 +560,49 @@ Não é obrigatório criar uma interface para toda classe. O DIP é mais
 importante nos limites entre regras de negócio e detalhes externos, onde
 a inversão realmente reduz o acoplamento.
 
+### 7.4. Pasta `app/di/` e composição de dependências
+
+Neste projeto, a composição de dependências fica centralizada em
+`app/di/`.
+
+``` text
+app/
+├── app.dart
+├── di/
+│   └── app_dependencies.dart
+└── router/
+    └── app_router.dart
+```
+
+Responsabilidades de `app/di/`:
+
+-   instanciar implementações concretas;
+-   conectar repositórios, casos de uso e módulos de features;
+-   entregar dependências prontas para o `router/` e para a composição
+    do aplicativo;
+-   evitar que telas e widgets montem dependências concretas
+    diretamente.
+
+Exemplo simplificado:
+
+``` dart
+class AppDependencies {
+  factory AppDependencies.create() {
+    return AppDependencies._(
+      authenticationModule: AuthenticationModule.create(),
+    );
+  }
+}
+```
+
+Esse modelo deixa claro que:
+
+-   o `app/` gerencia a composição;
+-   a feature expõe seu módulo público;
+-   a `presentation` recebe dependências prontas;
+-   uma feature não precisa conhecer diretamente a estrutura interna de
+    outra feature.
+
 ## 8. Como decidir entre `core`, `shared` e `features`
 
   ----------------------------------------------------------------------------------------
@@ -586,11 +657,17 @@ feature e reutilize-a internamente.
     recursos com responsabilidade realmente transversal.
 -   **Baixo acoplamento:** uma feature não deve acessar diretamente os
     arquivos internos de outra feature.
+-   **Importação por ponto público:** quando uma feature expuser um
+    `*_module.dart`, o `app/` deve preferir importar esse arquivo em vez
+    de navegar por arquivos internos da feature.
 -   **Contratos explícitos:** integrações entre módulos devem ocorrer
     por interfaces ou APIs internas bem definidas.
 -   **Complexidade proporcional:** crie subpastas e abstrações quando
     trouxerem clareza; não é necessário preencher toda a árvore desde o
     início.
+-   **`.gitkeep` apenas quando necessário:** use `.gitkeep` somente para
+    manter diretórios vazios no repositório. Assim que a pasta ganhar um
+    arquivo real, o `.gitkeep` deve ser removido.
 -   **Testabilidade:** domínio e casos de uso devem ser testáveis sem
     inicializar widgets, banco de dados ou conexões reais.
 -   **DTOs e entidades separados:** formatos de entrada e saída não
@@ -599,13 +676,15 @@ feature e reutilize-a internamente.
 
 ## 10. Resumo da arquitetura
 
--   `app/`: inicialização, configuração, navegação e composição geral.
+-   `app/`: inicialização, DI, navegação, tema, responsividade e
+    composição geral.
 -   `core/`: recursos arquiteturais, contratos e regras transversais
     reutilizáveis.
 -   `shared/`: componentes genéricos, extensões, formatadores e helpers
     sem regras de negócio.
 -   `features/`: funcionalidades organizadas por domínio, cada uma com
-    apresentação, aplicação, domínio e dados.
+    apresentação, aplicação, domínio, dados e, quando necessário, um
+    módulo público de entrada.
 
 **O princípio central é manter as regras de negócio no centro e os
 detalhes técnicos nas bordas.** A Feature-First define como o código é

@@ -26,24 +26,45 @@ class AppColors {
   static const AppDarkPalette dark = AppDarkPalette();
 }
 
-class AppLightPalette {
-  const AppLightPalette();
-
-  final Color background = AppColors.white;
-  final Color surface = AppColors.white;
-  final Color surfaceVariant = AppColors.grayLight;
-  final Color border = AppColors.grayLight;
-  final Color textPrimary = AppColors.black;
-  final Color textSecondary = AppColors.grayDark;
+abstract class AppPalette {
+  Color get background;
+  Color get surface;
+  Color get surfaceVariant;
+  Color get border;
+  Color get textPrimary;
+  Color get textSecondary;
 }
 
-class AppDarkPalette {
+class AppLightPalette implements AppPalette {
+  const AppLightPalette();
+
+  @override
+  final Color background = const Color(0xFFF8F5F2);
+  @override
+  final Color surface = AppColors.white;
+  @override
+  final Color surfaceVariant = const Color(0xFFF1E8E1);
+  @override
+  final Color border = const Color(0xFFD9CBC0);
+  @override
+  final Color textPrimary = AppColors.black;
+  @override
+  final Color textSecondary = const Color(0xFF6E5C53);
+}
+
+class AppDarkPalette implements AppPalette {
   const AppDarkPalette();
 
+  @override
   final Color background = const Color(0xFF121212);
+  @override
   final Color surface = const Color(0xFF1E1E1E);
+  @override
   final Color surfaceVariant = const Color(0xFF2A2A2A);
+  @override
   final Color border = const Color(0xFF2C2C2C);
+  @override
   final Color textPrimary = const Color(0xFFF5F5F5);
+  @override
   final Color textSecondary = const Color(0xFFBDBDBD);
 }

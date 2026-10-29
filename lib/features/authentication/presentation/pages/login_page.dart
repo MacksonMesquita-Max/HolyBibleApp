@@ -7,13 +7,12 @@ import '../../../../app/router/app_router.dart';
 import '../../../../core/utils/validators/email_validator.dart';
 import '../../../../core/utils/validators/password_validator.dart';
 import '../../application/dto/login_request.dart';
-import '../../application/ports/authentication_repository.dart';
 import '../../application/use_cases/sign_in_with_email_use_case.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({required this.authenticationRepository, super.key});
+  const LoginPage({required this.signInWithEmailUseCase, super.key});
 
-  final AuthenticationRepository authenticationRepository;
+  final SignInWithEmailUseCase signInWithEmailUseCase;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -24,18 +23,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  late final SignInWithEmailUseCase _signInWithEmailUseCase;
-
   bool _obscurePassword = true;
   bool _isSubmitting = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _signInWithEmailUseCase = SignInWithEmailUseCase(
-      widget.authenticationRepository,
-    );
-  }
 
   @override
   void dispose() {
@@ -54,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isSubmitting = true);
 
     try {
-      await _signInWithEmailUseCase.execute(
+      await widget.signInWithEmailUseCase.execute(
         LoginRequest(
           email: _emailController.text,
           password: _passwordController.text,
@@ -89,35 +78,21 @@ class _LoginPageState extends State<LoginPage> {
     Widget? suffixIcon,
   }) {
     final theme = Theme.of(context);
+    final fieldPadding = EdgeInsets.symmetric(
+      horizontal: context.responsive<double>(
+        mobile: 18,
+        tablet: 20,
+        desktop: 22,
+      ),
+      vertical: context.responsive<double>(mobile: 18, tablet: 20, desktop: 22),
+    );
 
     return InputDecoration(
       hintText: hintText,
       prefixIcon: Icon(prefixIcon, color: theme.colorScheme.onSurfaceVariant),
       suffixIcon: suffixIcon,
-      filled: true,
-      fillColor: theme.colorScheme.surface,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: theme.colorScheme.outlineVariant),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: theme.colorScheme.primary),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: theme.colorScheme.error),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: theme.colorScheme.error),
-      ),
-    );
+      contentPadding: fieldPadding,
+    ).applyDefaults(theme.inputDecorationTheme);
   }
 
   @override
@@ -126,31 +101,65 @@ class _LoginPageState extends State<LoginPage> {
     final maxWidth = context.responsive<double>(
       mobile: double.infinity,
       tablet: 460,
-      desktop: 480,
+      desktop: 520,
+    );
+    final outerPadding = context.responsive<double>(
+      mobile: 24,
+      tablet: 32,
+      desktop: 40,
+    );
+    final cardPadding = context.responsive<double>(
+      mobile: 28,
+      tablet: 32,
+      desktop: 36,
+    );
+    final cardRadius = context.responsive<double>(
+      mobile: 28,
+      tablet: 32,
+      desktop: 36,
+    );
+    final logoSize = context.responsive<double>(
+      mobile: 86,
+      tablet: 94,
+      desktop: 104,
+    );
+    final actionHeight = context.responsive<double>(
+      mobile: 56,
+      tablet: 60,
+      desktop: 62,
+    );
+    final sectionSpacing = context.responsive<double>(
+      mobile: 20,
+      tablet: 22,
+      desktop: 24,
+    );
+    final headingSpacing = context.responsive<double>(
+      mobile: 28,
+      tablet: 30,
+      desktop: 32,
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F5F2),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(outerPadding),
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: maxWidth),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: const [
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(cardRadius),
+                  boxShadow: [
                     BoxShadow(
-                      color: Color(0x14000000),
+                      color: theme.shadowColor.withOpacity(0.08),
                       blurRadius: 30,
                       offset: Offset(0, 14),
                     ),
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(28),
+                  padding: EdgeInsets.all(cardPadding),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -159,11 +168,11 @@ class _LoginPageState extends State<LoginPage> {
                         Center(
                           child: SvgPicture.asset(
                             AppAssets.logo,
-                            width: 86,
-                            height: 86,
+                            width: logoSize,
+                            height: logoSize,
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: headingSpacing),
                         Text(
                           'BEM-VINDO DE VOLTA',
                           style: theme.textTheme.labelMedium?.copyWith(
@@ -187,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: headingSpacing),
                         Text(
                           'E-mail',
                           style: theme.textTheme.labelLarge?.copyWith(
@@ -205,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                             prefixIcon: Icons.mail_outline,
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: sectionSpacing),
                         Text(
                           'Senha',
                           style: theme.textTheme.labelLarge?.copyWith(
@@ -238,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 12),
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: Alignment.center,
                           child: TextButton(
                             onPressed: () {
                               _showMessage(
@@ -250,15 +259,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
+                          height: actionHeight,
                           width: double.infinity,
                           child: FilledButton(
                             onPressed: _isSubmitting ? null : _submit,
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 18),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
                             child: _isSubmitting
                                 ? const SizedBox(
                                     height: 20,
@@ -271,7 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                                 : const Text('Entrar no Verbum'),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: sectionSpacing),
                         Center(
                           child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
