@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../di/app_dependencies.dart';
-import '../../features/home_screen/presentation/pages/home_page.dart';
 
 class AppRouter {
   AppRouter(this._dependencies);
@@ -11,6 +10,7 @@ class AppRouter {
   static const String splashRoute = '/';
   static const String loginRoute = '/login';
   static const String homeRoute = '/home';
+  static const String bibleRoute = '/bible';
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -25,7 +25,12 @@ class AppRouter {
         );
       case homeRoute:
         return MaterialPageRoute<void>(
-          builder: (_) => const HomePage(),
+          builder: (_) => _dependencies.homeModule.buildHomePage(),
+          settings: settings,
+        );
+      case bibleRoute:
+        return MaterialPageRoute<void>(
+          builder: (_) => _dependencies.bibleModule.buildBiblePage(),
           settings: settings,
         );
       case loginRoute:
