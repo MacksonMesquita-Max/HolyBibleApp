@@ -1,5 +1,5 @@
-import '../../features/authentication/authentication_module.dart';
-import '../../features/splash/splash_module.dart';
+import '../../features/authentication_screen/authentication_module.dart';
+import '../../features/splash_screen/splash_module.dart';
 
 class AppDependencies {
   AppDependencies._({
