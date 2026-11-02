@@ -39,6 +39,7 @@ dependencies:
   dio: ^5.9.0
   google_fonts: ^8.2.1
   flutter_svg: ^2.3.0
+  lottie: ^3.7.0
 
 dev_dependencies:
   flutter_test:
