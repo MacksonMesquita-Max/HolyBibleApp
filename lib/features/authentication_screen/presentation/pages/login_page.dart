@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../app/constants/app_responsive.dart';
+import '../../../../app/constants/app_dimensions.dart';
 import '../../../../app/constants/assets.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../core/utils/validators/email_validator.dart';
@@ -75,91 +75,45 @@ class _LoginPageState extends State<LoginPage> {
   InputDecoration _buildInputDecoration({
     required String hintText,
     required IconData prefixIcon,
+    required EdgeInsets padding,
     Widget? suffixIcon,
   }) {
     final theme = Theme.of(context);
-    final fieldPadding = EdgeInsets.symmetric(
-      horizontal: context.responsive<double>(
-        mobile: 18,
-        tablet: 20,
-        desktop: 22,
-      ),
-      vertical: context.responsive<double>(mobile: 18, tablet: 20, desktop: 22),
-    );
 
     return InputDecoration(
       hintText: hintText,
       prefixIcon: Icon(prefixIcon, color: theme.colorScheme.onSurfaceVariant),
       suffixIcon: suffixIcon,
-      contentPadding: fieldPadding,
+      contentPadding: padding,
     ).applyDefaults(theme.inputDecorationTheme);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxWidth = context.responsive<double>(
-      mobile: double.infinity,
-      tablet: 460,
-      desktop: 520,
-    );
-    final outerPadding = context.responsive<double>(
-      mobile: 24,
-      tablet: 32,
-      desktop: 40,
-    );
-    final cardPadding = context.responsive<double>(
-      mobile: 28,
-      tablet: 32,
-      desktop: 36,
-    );
-    final cardRadius = context.responsive<double>(
-      mobile: 28,
-      tablet: 32,
-      desktop: 36,
-    );
-    final logoSize = context.responsive<double>(
-      mobile: 86,
-      tablet: 94,
-      desktop: 104,
-    );
-    final actionHeight = context.responsive<double>(
-      mobile: 56,
-      tablet: 60,
-      desktop: 62,
-    );
-    final sectionSpacing = context.responsive<double>(
-      mobile: 20,
-      tablet: 22,
-      desktop: 24,
-    );
-    final headingSpacing = context.responsive<double>(
-      mobile: 28,
-      tablet: 30,
-      desktop: 32,
-    );
+    final layout = AppDimensions.of(context);
 
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(outerPadding),
+            padding: EdgeInsets.all(layout.screenPadding),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: maxWidth),
+              constraints: BoxConstraints(maxWidth: layout.contentMaxWidth),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(cardRadius),
+                  borderRadius: BorderRadius.circular(layout.cardRadius),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.shadowColor.withOpacity(0.08),
+                      color: theme.shadowColor.withValues(alpha: 0.08),
                       blurRadius: 30,
                       offset: Offset(0, 14),
                     ),
                   ],
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(cardPadding),
+                  padding: EdgeInsets.all(layout.cardPadding),
                   child: Form(
                     key: _formKey,
                     child: Column(
@@ -168,11 +122,11 @@ class _LoginPageState extends State<LoginPage> {
                         Center(
                           child: SvgPicture.asset(
                             AppAssets.logo,
-                            width: logoSize,
-                            height: logoSize,
+                            width: layout.brandMarkSize,
+                            height: layout.brandMarkSize,
                           ),
                         ),
-                        SizedBox(height: headingSpacing),
+                        SizedBox(height: layout.headingSpacing),
                         Text(
                           'BEM-VINDO DE VOLTA',
                           style: theme.textTheme.labelMedium?.copyWith(
@@ -196,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        SizedBox(height: headingSpacing),
+                        SizedBox(height: layout.headingSpacing),
                         Text(
                           'E-mail',
                           style: theme.textTheme.labelLarge?.copyWith(
@@ -212,9 +166,10 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: _buildInputDecoration(
                             hintText: 'seunome@email.com',
                             prefixIcon: Icons.mail_outline,
+                            padding: layout.fieldPadding,
                           ),
                         ),
-                        SizedBox(height: sectionSpacing),
+                        SizedBox(height: layout.sectionSpacing),
                         Text(
                           'Senha',
                           style: theme.textTheme.labelLarge?.copyWith(
@@ -231,6 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: _buildInputDecoration(
                             hintText: 'Digite sua senha',
                             prefixIcon: Icons.lock_outline,
+                            padding: layout.fieldPadding,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -259,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
-                          height: actionHeight,
+                          height: layout.actionHeight,
                           width: double.infinity,
                           child: FilledButton(
                             onPressed: _isSubmitting ? null : _submit,
@@ -275,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
                                 : const Text('Entrar no Verbum'),
                           ),
                         ),
-                        SizedBox(height: sectionSpacing),
+                        SizedBox(height: layout.sectionSpacing),
                         Center(
                           child: Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
