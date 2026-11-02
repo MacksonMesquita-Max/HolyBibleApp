@@ -18,7 +18,7 @@ class VerbumApp extends StatelessWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
-      initialRoute: AppRouter.loginRoute,
+      initialRoute: AppRouter.splashRoute,
       onGenerateRoute: _router.onGenerateRoute,
     );
   }

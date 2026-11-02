@@ -4,4 +4,5 @@ class AppAssets {
 
   static const String assetsPath = 'lib/app/assets';
   static const String logo = '$assetsPath/verbum-logo.svg';
+  static const String splashAnimation = '$assetsPath/splash_animation.json';
 }

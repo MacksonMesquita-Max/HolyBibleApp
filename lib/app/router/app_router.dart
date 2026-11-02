@@ -8,11 +8,21 @@ class AppRouter {
 
   final AppDependencies _dependencies;
 
-  static const String loginRoute = '/';
+  static const String splashRoute = '/';
+  static const String loginRoute = '/login';
   static const String homeRoute = '/home';
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splashRoute:
+        return MaterialPageRoute<void>(
+          builder: (_) => _dependencies.splashModule.buildSplashPage(
+            onCompleted: (context) {
+              Navigator.of(context).pushReplacementNamed(loginRoute);
+            },
+          ),
+          settings: settings,
+        );
       case homeRoute:
         return MaterialPageRoute<void>(
           builder: (_) => const HomePage(),
