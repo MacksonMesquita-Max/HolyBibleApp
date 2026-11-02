@@ -3,6 +3,7 @@ import '../../core/infrastructure/network/dio_client.dart';
 import 'application/use_cases/get_daily_verse_use_case.dart';
 import 'data/datasources/home_verse_remote_data_source.dart';
 import 'data/repositories/remote_daily_verse_repository.dart';
+import 'package:flutter/widgets.dart';
 import 'presentation/pages/home_page.dart';
 
 class HomeScreenModule {
@@ -20,7 +21,10 @@ class HomeScreenModule {
 
   final GetDailyVerseUseCase getDailyVerseUseCase;
 
-  HomePage buildHomePage() {
-    return HomePage(getDailyVerseUseCase: getDailyVerseUseCase);
+  HomePage buildHomePage({required Widget bottomNavigationBar}) {
+    return HomePage(
+      getDailyVerseUseCase: getDailyVerseUseCase,
+      bottomNavigationBar: bottomNavigationBar,
+    );
   }
 }

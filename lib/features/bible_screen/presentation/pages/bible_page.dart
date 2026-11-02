@@ -6,9 +6,14 @@ import '../../domain/entities/bible_passage.dart';
 import '../../domain/exceptions/bible_api_exception.dart';
 
 class BiblePage extends StatefulWidget {
-  const BiblePage({required this.getPassageUseCase, super.key});
+  const BiblePage({
+    required this.getPassageUseCase,
+    required this.bottomNavigationBar,
+    super.key,
+  });
 
   final GetPassageUseCase getPassageUseCase;
+  final Widget bottomNavigationBar;
 
   @override
   State<BiblePage> createState() => _BiblePageState();
@@ -64,6 +69,7 @@ class _BiblePageState extends State<BiblePage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Bíblia')),
+      bottomNavigationBar: widget.bottomNavigationBar,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
