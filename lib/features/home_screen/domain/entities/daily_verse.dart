@@ -1,4 +1,4 @@
-/// Versículo exibido no card da home.
+// Versículo exibido no card da home.
 class DailyVerse {
   const DailyVerse({
     required this.bookId,

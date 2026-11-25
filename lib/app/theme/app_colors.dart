@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Paleta de cores do aplicativo.
-/// As telas devem consumir as cores por meio do tema
+// Paleta de cores do aplicativo.
+// As telas devem consumir as cores por meio do tema
 class AppColors {
   const AppColors._();
 

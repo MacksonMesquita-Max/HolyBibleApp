@@ -1,4 +1,4 @@
-/// Um versículo individual de uma passagem bíblica.
+// Um versículo individual de uma passagem bíblica.
 class BibleVerse {
   const BibleVerse({
     required this.bookId,

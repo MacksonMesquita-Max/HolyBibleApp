@@ -1,4 +1,4 @@
-/// Cada asset referenciado aqui precisa estar declarado no `pubspec.yaml`.
+// Cada asset referenciado aqui precisa estar declarado no `pubspec.yaml`.
 class AppAssets {
   const AppAssets._();
 

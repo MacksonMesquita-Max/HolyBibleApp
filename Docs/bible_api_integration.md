@@ -25,18 +25,18 @@ outra feature**.
 
 ### 2.2. Tradução usada
 
-O aplicativo usa a tradução `almeida` (João Ferreira de Almeida, em
-português, domínio público).
+O aplicativo usa a tradução `kjv` (**King James Version**, em inglês).
+A Bible API identifica essa tradução como domínio público.
 
 O identificador padrão é declarado em um único lugar:
 
 ``` dart
 // core/infrastructure/network/bible_api_endpoints.dart
-static const String defaultTranslation = 'almeida';
+static const String defaultTranslation = 'kjv';
 ```
 
 > Observação: a camada de aplicação da feature `bible_screen` também
-> define `PassageRequest.defaultTranslation = 'almeida'`, que é o valor
+> define `PassageRequest.defaultTranslation = 'kjv'`, que é o valor
 > padrão do formulário de busca. Hoje o mesmo identificador existe nos
 > dois pontos.
 
@@ -60,7 +60,7 @@ monta URL manualmente.
 |---|---|
 | Endpoint | `GET /{reference}` |
 | Parâmetros de query | `translation={id}` |
-| Exemplos | `/João 3:16`, `/jn 3:16`, `/matt 25:31-33,46`, `/john 1` |
+| Exemplos | `/John 3:16`, `/John 1:1-5`, `/matt 25:31-33,46`, `/john 1` |
 
 Aceita um versículo, um intervalo, uma lista de versículos ou um capítulo
 inteiro. O espaço em branco da referência é normalizado para `+`.
@@ -188,7 +188,7 @@ class BibleApiEndpoints {
   const BibleApiEndpoints._();
 
   static const String baseUrl = 'https://bible-api.com';
-  static const String defaultTranslation = 'almeida';
+  static const String defaultTranslation = 'kjv';
 
   static String passage(String reference) { ... }
   static String randomVerse(String translation, {List<String> bookIds = const []}) { ... }
@@ -210,7 +210,7 @@ BiblePage
       → BibleApiRepository (implementação)
         → BibleRemoteDataSource
           → DioClient.get(BibleApiEndpoints.passage(ref))
-            → GET /{referência}?translation=almeida
+            → GET /{reference}?translation=kjv
 ```
 
 ### 6.2. Contratos
@@ -233,7 +233,7 @@ camada de aplicação independente de detalhes de transporte.
 class PassageRequest {
   const PassageRequest({required this.reference, this.translation = defaultTranslation});
 
-  static const String defaultTranslation = 'almeida';
+  static const String defaultTranslation = 'kjv';
 
   final String reference;
   final String translation;
@@ -258,25 +258,25 @@ Future<BiblePassage> execute(PassageRequest request) {
 -   `BiblePassage`: `reference`, `verses`, `translationId`,
     `translationName`.
 -   `BibleVerse`: `bookId`, `bookName`, `chapter`, `verse`, `text` e o
-    getter `label` (`"João 3:16"`).
+    getter `label` (`"John 3:16"`).
 
 ### 6.4. Formato da resposta
 
 ``` json
 {
-  "reference": "João 3:16",
+  "reference": "John 3:16",
   "verses": [
     {
       "book_id": "JHN",
-      "book_name": "João",
+      "book_name": "John",
       "chapter": 3,
       "verse": 16,
-      "text": "\nPorque Deus amou o mundo...\n\n"
+      "text": "\nFor God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.\n"
     }
   ],
-  "text": "Porque Deus amou o mundo...",
-  "translation_id": "almeida",
-  "translation_name": "João Ferreira de Almeida",
+  "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
+  "translation_id": "kjv",
+  "translation_name": "King James Version",
   "translation_note": "Public Domain"
 }
 ```
@@ -295,8 +295,8 @@ HomePage
       → DailyVerseRepository (port)
         → RemoteDailyVerseRepository (implementação)
           → HomeVerseRemoteDataSource
-            → DioClient.get(BibleApiEndpoints.randomVerse('almeida'))
-              → GET /data/almeida/random
+            → DioClient.get(BibleApiEndpoints.randomVerse('kjv'))
+              → GET /data/kjv/random
 ```
 
 ### 7.2. Formato da resposta (diferente do `passage`)
@@ -306,18 +306,18 @@ Este endpoint responde em **outro formato**, com os dados aninhados:
 ``` json
 {
   "translation": {
-    "identifier": "almeida",
-    "name": "João Ferreira de Almeida",
-    "language": "Portuguese",
-    "language_code": "por",
+    "identifier": "kjv",
+    "name": "King James Version",
+    "language": "English",
+    "language_code": "eng",
     "license": "Public Domain"
   },
   "random_verse": {
-    "book_id": "2CH",
-    "book": "2 Crônicas",
-    "chapter": 28,
-    "verse": 25,
-    "text": "Também em cada cidade de Judá fez altos..."
+    "book_id": "PSA",
+    "book": "Psalms",
+    "chapter": 109,
+    "verse": 27,
+    "text": "That they may know that this\nis thy hand;\nthat\n thou, LORD, hast done it."
   }
 }
 ```
@@ -464,11 +464,9 @@ Mensagens atuais:
 -   **Pacote `dio`** (já declarado no `pubspec.yaml`, `^5.9.0`). Nenhuma
     outra dependência é necessária.
 -   **Conexão com a internet** em tempo de execução.
--   **Android:** o arquivo `android/app/src/main/AndroidManifest.xml`
-    **não** declara a permissão `android.permission.INTERNET`. As
-    variantes `debug` e `profile` declaram, por isso o app funciona ao
-    rodar com `flutter run`; já em um APK **release** as chamadas de rede
-    falham. Para corrigir, é necessário adicionar dentro de `<manifest>`:
+-   **Android:** a permissão `android.permission.INTERNET` já está
+    declarada em `android/app/src/main/AndroidManifest.xml`, permitindo
+    chamadas de rede também em builds **release**:
 
     ``` xml
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -489,16 +487,16 @@ Teste manual do fluxo completo:
 1.  Abrir o app → splash → login.
 2.  Na home, o card deve carregar um versículo aleatório.
 3.  Tocar em "Mostrar outro versículo" deve trazer outro texto.
-4.  "Abrir a Bíblia" → buscar `João 3:16` deve retornar o texto em
-    português.
-5.  Testar uma referência inexistente (ex.: `João 99:99`) para ver a
+4.  "Abrir a Bíblia" → buscar `John 3:16` deve retornar o texto em
+    inglês na King James Version.
+5.  Testar uma referência inexistente (ex.: `John 99:99`) para ver a
     mensagem de 404.
 
 Também é possível validar a API isoladamente, sem o app:
 
 ``` shell
-curl "https://bible-api.com/João 3:16?translation=almeida"
-curl "https://bible-api.com/data/almeida/random"
+curl "https://bible-api.com/John 3:16?translation=kjv"
+curl "https://bible-api.com/data/kjv/random"
 ```
 
 ## 13. Limitações e próximos passos
@@ -517,4 +515,4 @@ curl "https://bible-api.com/data/almeida/random"
     Se um terceiro consumidor da Bible API aparecer, vale promover uma
     exceção única para o `core`.
 -   **Tradução padrão em dois lugares.** `BibleApiEndpoints` e
-    `PassageRequest` declaram `'almeida'` separadamente.
+    `PassageRequest` declaram `'kjv'` separadamente.

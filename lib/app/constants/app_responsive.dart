@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 
-/// `mobile`: menor que 600 | `tablet`: 600 a 1023 | `desktop`: 1024 ou mais.
+// `mobile`: menor que 600 | `tablet`: 600 a 1023 | `desktop`: 1024 ou mais.
 class AppResponsive {
   const AppResponsive._();
 
@@ -20,7 +20,7 @@ extension AppResponsiveContext on BuildContext {
 
   bool get isDesktop => screenWidth >= AppResponsive.desktopBreakpoint;
 
-  /// Escolhe um valor conforme o tamanho da tela atual.
+  // Escolhe um valor conforme o tamanho da tela atual.
   T responsive<T>({required T mobile, T? tablet, T? desktop}) {
     if (isDesktop) return desktop ?? tablet ?? mobile;
     if (isTablet) return tablet ?? mobile;

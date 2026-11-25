@@ -149,14 +149,14 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 12),
                           Text(
                             'Continue sua jornada.',
-                            style: theme.textTheme.headlineMedium?.copyWith(
+                            style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.w700,
                               color: theme.colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Entre para continuar de onde você parou.',
+                            'Entre para continuar onde parou.',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),

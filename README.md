@@ -6,7 +6,7 @@ com busca de passagens por referência e um versículo do dia na tela inicial.
 ## Sobre
 
 O app consome a [Bible API](https://bible-api.com/) para exibir o texto
-bíblico em português (tradução João Ferreira de Almeida, domínio público).
+bíblico em inglês na tradução King James Version (KJV, domínio público).
 A autenticação é **mockada** nesta fase: não há backend próprio nem
 integração real de login.
 
@@ -74,7 +74,7 @@ O documento completo está em
 
 -   Sem autenticação: nenhuma API key ou token.
 -   HTTPS com CORS habilitado, respostas em JSON.
--   Tradução padrão do app: `almeida` (português, domínio público).
+-   Tradução padrão do app: `kjv` (King James Version, inglês, domínio público).
 -   Limite de uso: **15 requisições a cada 30 segundos por IP**.
 -   Sem SLA: é um projeto de código aberto mantido por hobby.
 
@@ -82,14 +82,14 @@ O documento completo está em
 
 | Uso | Endpoint |
 |---|---|
-| Busca por referência | `GET /{referência}?translation=almeida` |
-| Versículo do dia | `GET /data/almeida/random` |
+| Busca por referência | `GET /{reference}?translation=kjv` |
+| Versículo do dia | `GET /data/kjv/random` |
 
 Exemplos:
 
 ``` shell
-curl "https://bible-api.com/João 3:16?translation=almeida"
-curl "https://bible-api.com/data/almeida/random"
+curl "https://bible-api.com/John 3:16?translation=kjv"
+curl "https://bible-api.com/data/kjv/random"
 ```
 
 ### Como o consumo está organizado
