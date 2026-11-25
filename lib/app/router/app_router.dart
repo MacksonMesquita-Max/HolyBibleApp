@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_shell.dart';
 import '../../features/app_navigation_bar/app_navigation_bar_module.dart';
 import '../di/app_dependencies.dart';
 
@@ -27,44 +28,28 @@ class AppRouter {
           settings: settings,
         );
       case homeRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.homeModule.buildHomePage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.home,
-            ),
-          ),
-          settings: settings,
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.home,
+          _dependencies.homeModule.buildHomePage,
         );
       case bibleRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.bibleModule.buildBiblePage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.bible,
-            ),
-          ),
-          settings: settings,
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.bible,
+          _dependencies.bibleModule.buildBiblePage,
         );
       case harpaRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.harpaModule.buildHarpaPage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.harpa,
-            ),
-          ),
-          settings: settings,
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.harpa,
+          _dependencies.harpaModule.buildHarpaPage,
         );
       case libraryRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.libraryModule.buildLibraryPage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.library,
-            ),
-          ),
-          settings: settings,
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.library,
+          _dependencies.libraryModule.buildLibraryPage,
         );
       case loginRoute:
       default:
@@ -73,6 +58,23 @@ class AppRouter {
           settings: settings,
         );
     }
+  }
+
+  Route<void> _buildMainRoute(
+    RouteSettings settings,
+    AppNavigationDestination currentDestination,
+    Widget Function() pageBuilder,
+  ) {
+    return MaterialPageRoute<void>(
+      builder: (context) => AppShell(
+        body: pageBuilder(),
+        bottomNavigationBar: _buildBottomNavigationBar(
+          context,
+          currentDestination,
+        ),
+      ),
+      settings: settings,
+    );
   }
 
   Widget _buildBottomNavigationBar(

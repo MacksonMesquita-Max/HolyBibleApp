@@ -6,14 +6,9 @@ import '../../domain/entities/bible_passage.dart';
 import '../../domain/exceptions/bible_api_exception.dart';
 
 class BiblePage extends StatefulWidget {
-  const BiblePage({
-    required this.getPassageUseCase,
-    required this.bottomNavigationBar,
-    super.key,
-  });
+  const BiblePage({required this.getPassageUseCase, super.key});
 
   final GetPassageUseCase getPassageUseCase;
-  final Widget bottomNavigationBar;
 
   @override
   State<BiblePage> createState() => _BiblePageState();
@@ -67,40 +62,36 @@ class _BiblePageState extends State<BiblePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Bíblia')),
-      bottomNavigationBar: widget.bottomNavigationBar,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _referenceController,
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (_) => _search(),
-                      decoration: const InputDecoration(
-                        labelText: 'Referência',
-                        hintText: 'Ex.: John 3:16',
-                        border: OutlineInputBorder(),
-                      ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _referenceController,
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (_) => _search(),
+                    decoration: const InputDecoration(
+                      labelText: 'Referência',
+                      hintText: 'Ex.: John 3:16',
+                      border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  FilledButton(
-                    onPressed: _isLoading ? null : _search,
-                    child: const Text('Buscar'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(child: _buildResult(theme)),
-            ],
-          ),
+                ),
+                const SizedBox(width: 12),
+                FilledButton(
+                  onPressed: _isLoading ? null : _search,
+                  child: const Text('Buscar'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Expanded(child: _buildResult(theme)),
+          ],
         ),
       ),
     );

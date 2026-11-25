@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 import 'presentation/pages/library_page.dart';
 
 class LibraryScreenModule {
@@ -7,7 +5,5 @@ class LibraryScreenModule {
 
   factory LibraryScreenModule.create() => LibraryScreenModule._();
 
-  LibraryPage buildLibraryPage({required Widget bottomNavigationBar}) {
-    return LibraryPage(bottomNavigationBar: bottomNavigationBar);
-  }
+  LibraryPage buildLibraryPage() => const LibraryPage();
 }

@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../../app/constants/assets.dart';
 import '../../../../app/router/app_router.dart';
 import '../../application/use_cases/get_daily_verse_use_case.dart';
 import '../widgets/daily_verse_card.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({
-    required this.getDailyVerseUseCase,
-    required this.bottomNavigationBar,
-    super.key,
-  });
+  const HomePage({required this.getDailyVerseUseCase, super.key});
 
   final GetDailyVerseUseCase getDailyVerseUseCase;
-  final Widget bottomNavigationBar;
 
   void _signOut(BuildContext context) {
     Navigator.of(
@@ -24,26 +17,20 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Verbum - Bíblia Sagrada')),
-      bottomNavigationBar: bottomNavigationBar,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SvgPicture.asset(AppAssets.logo, width: 160, height: 160),
-              const SizedBox(height: 24),
-              DailyVerseCard(getDailyVerseUseCase: getDailyVerseUseCase),
-              const SizedBox(height: 24),
-              FilledButton.icon(
-                onPressed: () => _signOut(context),
-                icon: const Icon(Icons.logout),
-                label: const Text('Sair do app'),
-              ),
-            ],
-          ),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DailyVerseCard(getDailyVerseUseCase: getDailyVerseUseCase),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => _signOut(context),
+              icon: const Icon(Icons.logout),
+              label: const Text('Sair do app'),
+            ),
+          ],
         ),
       ),
     );
