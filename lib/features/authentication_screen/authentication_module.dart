@@ -3,19 +3,19 @@ import 'data/repositories/mock_authentication_repository.dart';
 import 'presentation/pages/login_page.dart';
 
 class AuthenticationModule {
-  AuthenticationModule._({required this.signInWithEmailUseCase});
+  AuthenticationModule._({required this.signInUseCase});
 
   factory AuthenticationModule.create() {
     final authenticationRepository = MockAuthenticationRepository();
 
     return AuthenticationModule._(
-      signInWithEmailUseCase: SignInWithEmailUseCase(authenticationRepository),
+      signInUseCase: SignInUseCase(authenticationRepository),
     );
   }
 
-  final SignInWithEmailUseCase signInWithEmailUseCase;
+  final SignInUseCase signInUseCase;
 
   LoginPage buildLoginPage() {
-    return LoginPage(signInWithEmailUseCase: signInWithEmailUseCase);
+    return LoginPage(signInUseCase: signInUseCase);
   }
 }

@@ -5,15 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../app/constants/app_dimensions.dart';
 import '../../../../app/constants/assets.dart';
 import '../../../../app/router/app_router.dart';
-import '../../../../core/utils/validators/email_validator.dart';
+import '../../../../core/utils/validators/full_name_validator.dart';
 import '../../../../core/utils/validators/password_validator.dart';
 import '../../application/dto/login_request.dart';
 import '../../application/use_cases/sign_in_with_email_use_case.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({required this.signInWithEmailUseCase, super.key});
+  const LoginPage({required this.signInUseCase, super.key});
 
-  final SignInWithEmailUseCase signInWithEmailUseCase;
+  final SignInUseCase signInUseCase;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -21,7 +21,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _fullNameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _fullNameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -44,9 +44,9 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isSubmitting = true);
 
     try {
-      await widget.signInWithEmailUseCase.execute(
+      await widget.signInUseCase.execute(
         LoginRequest(
-          email: _emailController.text,
+          fullName: _fullNameController.text,
           password: _passwordController.text,
         ),
       );
@@ -163,20 +163,22 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(height: layout.headingSpacing),
                           Text(
-                            'E-mail',
+                            'Nome completo',
                             style: theme.textTheme.labelLarge?.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
+                            controller: _fullNameController,
+                            keyboardType: TextInputType.name,
+                            textCapitalization: TextCapitalization.words,
                             textInputAction: TextInputAction.next,
-                            validator: EmailValidator.validate,
+                            autofillHints: const [AutofillHints.name],
+                            validator: FullNameValidator.validate,
                             decoration: _buildInputDecoration(
-                              hintText: 'seunome@email.com',
-                              prefixIcon: Icons.mail_outline,
+                              hintText: 'Ex.: Mariana Silva',
+                              prefixIcon: Icons.person_outline,
                               padding: layout.fieldPadding,
                             ),
                           ),
