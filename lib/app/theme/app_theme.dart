@@ -6,11 +6,8 @@ import 'app_text_styles.dart';
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get light =>
-      _buildTheme(brightness: Brightness.light, palette: AppColors.light);
-
-  static ThemeData get dark =>
-      _buildTheme(brightness: Brightness.dark, palette: AppColors.dark);
+  static ThemeData get light => _buildTheme(brightness: Brightness.light, palette: AppColors.light);
+  static ThemeData get dark => _buildTheme(brightness: Brightness.dark, palette: AppColors.dark);
 
   static ThemeData _buildTheme({
     required Brightness brightness,

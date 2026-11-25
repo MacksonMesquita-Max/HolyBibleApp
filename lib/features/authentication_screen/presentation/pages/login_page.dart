@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/constants/app_dimensions.dart';
@@ -93,178 +94,189 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
     final layout = AppDimensions.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(layout.screenPadding),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: layout.contentMaxWidth),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(layout.cardRadius),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.shadowColor.withValues(alpha: 0.08),
-                      blurRadius: 30,
-                      offset: Offset(0, 14),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(layout.cardPadding),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: SvgPicture.asset(
-                            AppAssets.logo,
-                            width: layout.brandMarkSize,
-                            height: layout.brandMarkSize,
-                          ),
-                        ),
-                        SizedBox(height: layout.headingSpacing),
-                        Text(
-                          'BEM-VINDO DE VOLTA',
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Continue sua jornada.',
-                          style: theme.textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Entre para continuar de onde você parou.',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        SizedBox(height: layout.headingSpacing),
-                        Text(
-                          'E-mail',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          validator: EmailValidator.validate,
-                          decoration: _buildInputDecoration(
-                            hintText: 'seunome@email.com',
-                            prefixIcon: Icons.mail_outline,
-                            padding: layout.fieldPadding,
-                          ),
-                        ),
-                        SizedBox(height: layout.sectionSpacing),
-                        Text(
-                          'Senha',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: _obscurePassword,
-                          textInputAction: TextInputAction.done,
-                          onFieldSubmitted: (_) => _submit(),
-                          validator: PasswordValidator.validate,
-                          decoration: _buildInputDecoration(
-                            hintText: 'Digite sua senha',
-                            prefixIcon: Icons.lock_outline,
-                            padding: layout.fieldPadding,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscurePassword = !_obscurePassword;
-                                });
-                              },
-                              icon: Icon(
-                                _obscurePassword
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                              ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: theme.scaffoldBackgroundColor,
+        statusBarIconBrightness: theme.brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark,
+        statusBarBrightness: theme.brightness == Brightness.dark
+            ? Brightness.dark
+            : Brightness.light,
+      ),
+      child: Scaffold(
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(layout.screenPadding),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: layout.contentMaxWidth),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(layout.cardRadius),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.shadowColor.withValues(alpha: 0.08),
+                        blurRadius: 30,
+                        offset: Offset(0, 14),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(layout.cardPadding),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: SvgPicture.asset(
+                              AppAssets.logo,
+                              width: layout.brandMarkSize,
+                              height: layout.brandMarkSize,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.center,
-                          child: TextButton(
-                            onPressed: () {
-                              _showMessage(
-                                'Recuperação de senha indisponível nesta fase.',
-                              );
-                            },
-                            child: const Text('Esqueci minha senha'),
+                          SizedBox(height: layout.headingSpacing),
+                          Text(
+                            'BEM-VINDO DE VOLTA',
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              letterSpacing: 2,
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: layout.actionHeight,
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: _isSubmitting ? null : _submit,
-                            child: _isSubmitting
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Text('Entrar no Verbum'),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Continue sua jornada.',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: theme.colorScheme.onSurface,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: layout.sectionSpacing),
-                        Center(
-                          child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            spacing: 4,
-                            children: [
-                              Text(
-                                'Ainda não tem conta?',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _showMessage(
-                                    'Cadastro indisponível nesta fase mockada.',
-                                  );
-                                },
-                                child: const Text('Criar conta grátis'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Center(
-                          child: Text(
-                            'Ao continuar, você concorda com os Termos de Uso e a Política de Privacidade.',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodySmall?.copyWith(
+                          const SizedBox(height: 8),
+                          Text(
+                            'Entre para continuar de onde você parou.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: layout.headingSpacing),
+                          Text(
+                            'E-mail',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            validator: EmailValidator.validate,
+                            decoration: _buildInputDecoration(
+                              hintText: 'seunome@email.com',
+                              prefixIcon: Icons.mail_outline,
+                              padding: layout.fieldPadding,
+                            ),
+                          ),
+                          SizedBox(height: layout.sectionSpacing),
+                          Text(
+                            'Senha',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            textInputAction: TextInputAction.done,
+                            onFieldSubmitted: (_) => _submit(),
+                            validator: PasswordValidator.validate,
+                            decoration: _buildInputDecoration(
+                              hintText: 'Digite sua senha',
+                              prefixIcon: Icons.lock_outline,
+                              padding: layout.fieldPadding,
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Align(
+                            alignment: Alignment.center,
+                            child: TextButton(
+                              onPressed: () {
+                                _showMessage(
+                                  'Recuperação de senha indisponível nesta fase.',
+                                );
+                              },
+                              child: const Text('Esqueci minha senha'),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: layout.actionHeight,
+                            width: double.infinity,
+                            child: FilledButton(
+                              onPressed: _isSubmitting ? null : _submit,
+                              child: _isSubmitting
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text('Entrar no Verbum'),
+                            ),
+                          ),
+                          SizedBox(height: layout.sectionSpacing),
+                          Center(
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 4,
+                              children: [
+                                Text(
+                                  'Ainda não tem conta?',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    _showMessage(
+                                      'Cadastro indisponível nesta fase mockada.',
+                                    );
+                                  },
+                                  child: const Text('Criar conta grátis'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Center(
+                            child: Text(
+                              'Ao continuar, você concorda com os Termos de Uso e a Política de Privacidade.',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
