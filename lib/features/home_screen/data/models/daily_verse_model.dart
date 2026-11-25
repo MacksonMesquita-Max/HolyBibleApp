@@ -1,7 +1,7 @@
-/// Resposta de `GET /data/{translation}/random`.
+// Resposta de `GET /data/{translation}/random`.
 ///
-/// Formato próprio da API, diferente do usado na busca por referência:
-/// os dados vêm aninhados em `random_verse` e `translation`.
+// Formato próprio da API, diferente do usado na busca por referência:
+// os dados vêm aninhados em `random_verse` e `translation`.
 class DailyVerseModel {
   const DailyVerseModel({
     required this.bookId,

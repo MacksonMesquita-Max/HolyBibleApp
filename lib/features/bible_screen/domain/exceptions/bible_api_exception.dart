@@ -1,4 +1,4 @@
-/// Falha ao consultar a API da Bíblia (referência inválida, rede, etc.).
+// Falha ao consultar a API da Bíblia (referência inválida, rede, etc.).
 class BibleApiException implements Exception {
   const BibleApiException(this.message);
 

@@ -1,6 +1,6 @@
 import 'bible_verse.dart';
 
-/// Uma passagem bíblica composta por um ou mais versículos e os dados da tradução.
+// Uma passagem bíblica composta por um ou mais versículos e os dados da tradução.
 class BiblePassage {
   const BiblePassage({
     required this.reference,

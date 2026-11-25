@@ -38,7 +38,15 @@ class BibleRemoteDataSource {
 
   String _describe(DioException error) {
     if (error.response?.statusCode == 404) {
-      return 'Referência não encontrada. Confira livro, capítulo e versículo.';
+      final responseData = error.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final apiError = responseData['error']?.toString().trim();
+        if (apiError != null && apiError.isNotEmpty) {
+          return 'Bible API: $apiError';
+        }
+      }
+
+      return 'A Bible API não encontrou a referência ou tradução solicitada (HTTP 404).';
     }
 
     return 'Não foi possível consultar a Bíblia agora. Verifique sua conexão.';

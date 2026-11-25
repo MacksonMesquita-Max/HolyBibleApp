@@ -23,7 +23,9 @@ class _DailyVerseCardState extends State<DailyVerseCard> {
   }
 
   void _reload() {
-    setState(() => _verseFuture = widget.getDailyVerseUseCase.execute());
+    setState(() {
+      _verseFuture = widget.getDailyVerseUseCase.execute();
+    });
   }
 
   @override

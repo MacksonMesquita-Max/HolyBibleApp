@@ -1,11 +1,11 @@
-/// Entrada do caso de uso de leitura de uma passagem.
+// Entrada do caso de uso de leitura de uma passagem.
 class PassageRequest {
   const PassageRequest({
     required this.reference,
     this.translation = defaultTranslation,
   });
 
-  static const String defaultTranslation = 'almeida';
+  static const String defaultTranslation = 'kjv';
 
   final String reference;
   final String translation;

@@ -28,13 +28,21 @@ class HomeVerseRemoteDataSource {
 
       return DailyVerseModel.fromJson(data);
     } on DioException catch (error) {
-      throw DailyVerseException(_describe(error));
+      throw DailyVerseException(_describe(error, translation));
     }
   }
 
-  String _describe(DioException error) {
+  String _describe(DioException error, String translation) {
     if (error.response?.statusCode == 404) {
-      return 'Nenhum versículo disponível para esta tradução.';
+      final responseData = error.response?.data;
+      if (responseData is Map<String, dynamic>) {
+        final apiError = responseData['error']?.toString().trim();
+        if (apiError != null && apiError.isNotEmpty) {
+          return 'Bible API: $apiError';
+        }
+      }
+
+      return 'A Bible API não encontrou a tradução "$translation" ou o endpoint solicitado (HTTP 404).';
     }
 
     return 'Não foi possível carregar o versículo. Verifique sua conexão.';

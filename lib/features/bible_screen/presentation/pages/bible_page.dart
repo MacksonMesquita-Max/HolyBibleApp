@@ -21,7 +21,7 @@ class BiblePage extends StatefulWidget {
 
 class _BiblePageState extends State<BiblePage> {
   final TextEditingController _referenceController = TextEditingController(
-    text: 'João 3:16',
+    text: 'John 3:16',
   );
 
   bool _isLoading = false;
@@ -85,7 +85,7 @@ class _BiblePageState extends State<BiblePage> {
                       onSubmitted: (_) => _search(),
                       decoration: const InputDecoration(
                         labelText: 'Referência',
-                        hintText: 'Ex.: João 3:16',
+                        hintText: 'Ex.: John 3:16',
                         border: OutlineInputBorder(),
                       ),
                     ),

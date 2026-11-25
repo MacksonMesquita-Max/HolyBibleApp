@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'app_responsive.dart';
 
-/// Tokens genéricos de dimensão e espaçamento, resolvidos por tamanho de tela.
+// Tokens genéricos de dimensão e espaçamento, resolvidos por tamanho de tela.
 class AppDimensions {
   const AppDimensions({
     required this.contentMaxWidth,

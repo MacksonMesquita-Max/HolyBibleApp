@@ -1,4 +1,4 @@
-/// Falha ao obter o versículo do dia (rede, resposta inválida, etc.).
+// Falha ao obter o versículo do dia (rede, resposta inválida, etc.).
 class DailyVerseException implements Exception {
   const DailyVerseException(this.message);
 
