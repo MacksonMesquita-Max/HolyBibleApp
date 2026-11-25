@@ -1,17 +1,17 @@
-import '../../../../core/utils/validators/email_validator.dart';
+import '../../../../core/utils/validators/full_name_validator.dart';
 import '../../../../core/utils/validators/password_validator.dart';
 import '../dto/login_request.dart';
 import '../ports/authentication_repository.dart';
 
-class SignInWithEmailUseCase {
-  const SignInWithEmailUseCase(this._authenticationRepository);
+class SignInUseCase {
+  const SignInUseCase(this._authenticationRepository);
 
   final AuthenticationRepository _authenticationRepository;
 
   Future<void> execute(LoginRequest request) async {
-    final emailError = EmailValidator.validate(request.email);
-    if (emailError != null) {
-      throw ArgumentError(emailError);
+    final fullNameError = FullNameValidator.validate(request.fullName);
+    if (fullNameError != null) {
+      throw ArgumentError(fullNameError);
     }
 
     final passwordError = PasswordValidator.validate(request.password);
@@ -20,7 +20,7 @@ class SignInWithEmailUseCase {
     }
 
     await _authenticationRepository.signIn(
-      email: request.email.trim(),
+      fullName: request.fullName.trim(),
       password: request.password.trim(),
     );
   }
