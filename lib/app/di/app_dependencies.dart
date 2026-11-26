@@ -4,6 +4,7 @@ import '../../features/bible_screen/bible_screen_module.dart';
 import '../../features/harpa_screen/harpa_screen_module.dart';
 import '../../features/home_screen/home_screen_module.dart';
 import '../../features/library_screen/library_screen_module.dart';
+import '../../features/search_screen/search_screen_module.dart';
 import '../../features/splash_screen/splash_module.dart';
 
 class AppDependencies {
@@ -15,6 +16,7 @@ class AppDependencies {
     required this.homeModule,
     required this.harpaModule,
     required this.libraryModule,
+    required this.searchModule,
   });
 
   factory AppDependencies.create() {
@@ -26,6 +28,7 @@ class AppDependencies {
       homeModule: HomeScreenModule.create(),
       harpaModule: HarpaScreenModule.create(),
       libraryModule: LibraryScreenModule.create(),
+      searchModule: SearchScreenModule.create(),
     );
   }
 
@@ -36,4 +39,5 @@ class AppDependencies {
   final HomeScreenModule homeModule;
   final HarpaScreenModule harpaModule;
   final LibraryScreenModule libraryModule;
+  final SearchScreenModule searchModule;
 }

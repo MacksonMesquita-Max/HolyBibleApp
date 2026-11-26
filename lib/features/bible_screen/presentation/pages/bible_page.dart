@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/widgets/inputs/search_input.dart';
 import '../../application/dto/passage_request.dart';
 import '../../application/use_cases/get_passage_use_case.dart';
 import '../../domain/entities/bible_passage.dart';
@@ -71,15 +72,11 @@ class _BiblePageState extends State<BiblePage> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: SearchInput(
                     controller: _referenceController,
-                    textInputAction: TextInputAction.search,
+                    labelText: 'Referência',
+                    hintText: 'Ex.: John 3:16',
                     onSubmitted: (_) => _search(),
-                    decoration: const InputDecoration(
-                      labelText: 'Referência',
-                      hintText: 'Ex.: John 3:16',
-                      border: OutlineInputBorder(),
-                    ),
                   ),
                 ),
                 const SizedBox(width: 12),

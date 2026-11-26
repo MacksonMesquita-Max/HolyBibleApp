@@ -16,6 +16,7 @@ class AppRouter {
   static const String bibleRoute = '/bible';
   static const String harpaRoute = '/harpa';
   static const String libraryRoute = '/library';
+  static const String searchRoute = '/search';
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -54,6 +55,11 @@ class AppRouter {
           AppNavigationDestination.library,
           _dependencies.libraryModule.buildLibraryPage,
         );
+      case searchRoute:
+        return MaterialPageRoute<void>(
+          builder: (_) => _dependencies.searchModule.buildSearchPage(),
+          settings: settings,
+        );
       case loginRoute:
       default:
         _currentUserName = null;
@@ -78,6 +84,9 @@ class AppRouter {
           context,
           currentDestination,
         ),
+        onSearch: () {
+          Navigator.of(context).pushNamed<void>(searchRoute);
+        },
       ),
       settings: settings,
     );

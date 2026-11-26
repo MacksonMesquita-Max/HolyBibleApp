@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class VerbumTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const VerbumTopBar({required this.logoAsset, super.key});
+  const VerbumTopBar({
+    required this.logoAsset,
+    required this.onSearch,
+    super.key,
+  });
 
   static const double _height = 64;
 
   final String logoAsset;
+  final VoidCallback onSearch;
 
   @override
   Size get preferredSize => const Size.fromHeight(_height);
@@ -40,7 +45,7 @@ class VerbumTopBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16),
           child: IconButton(
-            onPressed: () {},
+            onPressed: onSearch,
             tooltip: 'Buscar',
             icon: const Icon(Icons.search_rounded),
             style: IconButton.styleFrom(
