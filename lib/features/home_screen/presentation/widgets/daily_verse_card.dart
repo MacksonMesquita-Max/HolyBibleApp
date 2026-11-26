@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/widgets/cards/scripture_verse_card.dart';
 import '../../application/use_cases/get_daily_verse_use_case.dart';
 import '../../domain/entities/daily_verse.dart';
 import '../../domain/exceptions/daily_verse_exception.dart';
+import 'scripture_verse_card.dart';
 
 class DailyVerseCard extends StatefulWidget {
   const DailyVerseCard({required this.getDailyVerseUseCase, super.key});
