@@ -33,72 +33,48 @@ lib/
 │   ├── app.dart
 │   ├── di/
 │   ├── router/
+│   ├── app_shell.dart
 │   ├── theme/
 │   └── constants/
 │
 ├── core/
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── value_objects/
-│   │   ├── exceptions/
-│   │   ├── failures/
-│   │   └── contracts/
-│   ├── application/
-│   │   ├── contracts/
-│   │   ├── services/
-│   │   └── policies/
-│   ├── infrastructure/
-│   │   ├── network/
-│   │   ├── storage/
-│   │   ├── messaging/
-│   │   ├── logging/
-│   │   └── security/
-│   └── utils/
-│       ├── result/
-│       └── validators/
+│   ├── infrastructure/network/
+│   └── utils/validators/
 │
 ├── shared/
-│   ├── widgets/
-│   │   ├── buttons/
-│   │   ├── inputs/
-│   │   ├── dialogs/
-│   │   ├── cards/
-│   │   └── loading/
-│   ├── extensions/
 │   ├── formatters/
-│   ├── helpers/
-│   └── constants/
+│   └── widgets/
+│       ├── buttons/
+│       ├── cards/
+│       ├── inputs/
+│       └── verbum_top_bar.dart
 │
 └── features/
-    ├── autenticacao/
-    │   ├── autenticacao_module.dart
-    │   ├── presentation/
-    │   ├── application/
-    │   ├── domain/
-    │   └── data/
-    ├── usuarios/
-    │   ├── usuarios_module.dart
-    │   ├── presentation/
-    │   ├── application/
-    │   ├── domain/
-    │   └── data/
-    └── produtos/
-        ├── produtos_module.dart
-        ├── presentation/
-        ├── application/
-        ├── domain/
-        └── data/
+    ├── splash_screen/
+    ├── authentication_screen/
+    ├── app_navigation_bar/
+    ├── home_screen/
+    ├── bible_screen/
+    ├── harpa_screen/
+    ├── library_screen/
+    └── search_screen/
 ```
 
-A árvore é uma referência inicial. Nem toda pasta precisa existir desde
-o começo: crie subpastas quando elas melhorarem a organização e a
-clareza do módulo.
+A árvore acima representa a organização atual do Verbum, omitindo
+arquivos internos para facilitar a leitura. Nem toda feature precisa ter
+todas as camadas; crie subpastas quando elas melhorarem a organização e
+a clareza do módulo. Pastas futuras sugeridas nas próximas seções são
+opcionais, não uma exigência para criá-las antecipadamente.
 
 ## 3. Pasta `core/`
 
 A pasta `core/` reúne recursos transversais que possuem responsabilidade
 arquitetural ou representam conceitos e regras compartilhados por
 diferentes funcionalidades.
+
+As pastas abaixo são possibilidades arquiteturais, não uma exigência de
+que todas existam no projeto. Atualmente, o `core` do Verbum concentra
+infraestrutura de rede e validadores genéricos.
 
 ``` text
 core/
@@ -174,34 +150,24 @@ negócio.
 
 ``` text
 shared/
-├── widgets/
-│   ├── buttons/
-│   │   ├── primary_button.dart
-│   │   └── secondary_button.dart
-│   ├── inputs/
-│   │   ├── app_text_field.dart
-│   │   └── search_field.dart
-│   ├── dialogs/
-│   │   ├── confirmation_dialog.dart
-│   │   └── error_dialog.dart
-│   ├── cards/
-│   │   └── app_card.dart
-│   └── loading/
-│       ├── loading_indicator.dart
-│       └── loading_overlay.dart
-├── extensions/
-│   ├── string_extensions.dart
-│   └── date_time_extensions.dart
 ├── formatters/
-│   ├── currency_formatter.dart
-│   └── date_formatter.dart
-├── helpers/
-│   ├── debounce.dart
-│   └── responsive_helper.dart
-└── constants/
-    ├── spacing.dart
-    └── dimensions.dart
+│   └── portuguese_date_formatter.dart
+└── widgets/
+    ├── buttons/
+    │   ├── icon_action_button.dart
+    │   ├── primary_button.dart
+    │   ├── secondary_button.dart
+    │   └── text_action_button.dart
+    ├── cards/
+    │   └── page_header_card.dart
+    ├── inputs/
+    │   └── search_input.dart
+    └── verbum_top_bar.dart
 ```
+
+Essa árvore representa os componentes compartilhados existentes. Pastas
+como `dialogs/`, `extensions/` ou `loading/` só devem ser criadas quando
+houver uma necessidade concreta.
 
 ### Responsabilidades
 
@@ -219,6 +185,26 @@ produtos nem decidir se um pedido pode ser faturado.
 **Regra prática:** se o componente pode ser usado em diferentes
 funcionalidades sem conhecer o negócio, provavelmente pertence a
 `shared/`.
+
+### 4.1. Botões compartilhados do Verbum
+
+Os controles de botão da interface devem ser construídos pelos widgets
+visuais em `lib/shared/widgets/buttons/`. As telas configuram os
+parâmetros e callbacks; os widgets compartilhados encapsulam os
+componentes Material do Flutter.
+
+| Widget | Uso |
+|---|---|
+| `PrimaryButton` | Ação principal, como entrar ou pesquisar |
+| `SecondaryButton` | Ação secundária, como sair do app |
+| `TextActionButton` | Ação textual, como recuperar senha ou tentar novamente |
+| `IconActionButton` | Ação representada por ícone, como buscar ou alternar a visibilidade da senha |
+
+Estilos específicos podem ser passados como configuração visual. O
+componente compartilhado não deve conter lógica de negócio nem conhecer
+uma feature específica. A navegação inferior e itens de lista clicáveis
+continuam usando os componentes de navegação/lista apropriados, pois não
+são botões de ação genéricos.
 
 ## 5. Pasta `features/`
 
@@ -284,9 +270,14 @@ dependências sejam preservadas.
 Além das camadas internas, uma feature pode expor um arquivo-raiz com
 seu ponto de entrada público, por exemplo:
 
+-   `app_navigation_bar_module.dart`
 -   `authentication_module.dart`
+-   `bible_screen_module.dart`
+-   `harpa_screen_module.dart`
 -   `home_screen_module.dart`
--   `library_module.dart`
+-   `library_screen_module.dart`
+-   `search_screen_module.dart`
+-   `splash_module.dart`
 
 Esse arquivo funciona como uma fachada da feature para a camada `app/`.
 Ele pode centralizar:
@@ -301,6 +292,11 @@ público em vez de acessar arquivos internos aleatórios da feature.
 
 Assim, a feature continua encapsulada e o `app/` passa a depender de uma
 API mais estável e explícita.
+
+No Verbum, `AppDependencies` cria os módulos públicos e `AppRouter`
+coordena as rotas. As telas principais são montadas pelo `AppShell`, que
+mantém a barra superior de busca e a navegação inferior fora das páginas
+individuais.
 
 ## 6. Camadas internas: DDD + Clean Architecture
 
@@ -342,6 +338,10 @@ presentation/
 Não é necessário criar todas as pastas em toda feature. Em Flutter,
 `pages/`, `widgets/` e `cubit/` podem ser suficientes para a
 apresentação.
+
+No estado atual do Verbum, as páginas usam principalmente estado local
+de widgets, `FutureBuilder` e callbacks. Cubit/Bloc são alternativas
+arquiteturais, não uma dependência atualmente adotada pelo app.
 
 **Regra:** a apresentação não deve implementar regras de negócio nem
 acessar diretamente o banco de dados.
@@ -677,14 +677,23 @@ feature e reutilize-a internamente.
 ## 10. Resumo da arquitetura
 
 -   `app/`: inicialização, DI, navegação, tema, responsividade e
-    composição geral.
+    composição geral. `AppRouter` coordena as rotas; `AppShell` mantém a
+    barra superior e a navegação inferior nas telas principais.
 -   `core/`: recursos arquiteturais, contratos e regras transversais
-    reutilizáveis.
+    reutilizáveis. Os endpoints das APIs externas e o cliente HTTP
+    genérico ficam em `core/infrastructure/network/`.
 -   `shared/`: componentes genéricos, extensões, formatadores e helpers
-    sem regras de negócio.
+    sem regras de negócio. Os quatro estilos de botão ficam em
+    `shared/widgets/buttons/`; widgets específicos da Home continuam na
+    própria feature.
 -   `features/`: funcionalidades organizadas por domínio, cada uma com
     apresentação, aplicação, domínio, dados e, quando necessário, um
     módulo público de entrada.
+
+O modo de tela imersiva e o estilo inicial das barras de sistema são
+configurados em `main.dart`, na composição da aplicação. Uma tela pode
+definir uma sobreposição específica, como a tela de login, sem mover essa
+configuração para uma feature não relacionada.
 
 **O princípio central é manter as regras de negócio no centro e os
 detalhes técnicos nas bordas.** A Feature-First define como o código é

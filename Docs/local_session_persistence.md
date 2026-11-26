@@ -32,6 +32,8 @@ Atualmente, o login é mockado:
 - A splash navega diretamente para a tela de login.
 - O botão de saída da Biblioteca retorna para o login, mas ainda não
   remove uma sessão persistida.
+- O card “Sua jornada” na Home usa valores demonstrativos fixos; o
+  progresso de leitura ainda não é salvo nem restaurado.
 
 Portanto, a funcionalidade futura será uma **restauração de sessão local
 para conveniência**, não uma autenticação real nem uma barreira de
@@ -100,7 +102,7 @@ lib/features/authentication_screen/
     ports/
       authentication_repository.dart
     use_cases/
-      sign_in_with_email_use_case.dart
+      sign_in_use_case.dart
       restore_session_use_case.dart
       sign_out_use_case.dart
   data/
@@ -115,6 +117,11 @@ lib/features/authentication_screen/
 
 Os nomes são uma proposta de organização e poderão ser ajustados para
 manter consistência com a implementação existente.
+
+No código atual, o caso de uso é a classe `SignInUseCase`, recebe um
+`LoginRequest` com nome completo e senha e vive no arquivo legado
+`sign_in_with_email_use_case.dart`. O nome do arquivo deverá ser alinhado
+ao fluxo por nome durante a implementação ou uma limpeza dedicada.
 
 Responsabilidades:
 
