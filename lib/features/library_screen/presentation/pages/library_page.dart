@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/router/app_router.dart';
+import '../../../../shared/widgets/buttons/secondary_button.dart';
+
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
+
+  void _signOut(BuildContext context) {
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRouter.loginRoute, (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +42,13 @@ class LibraryPage extends StatelessWidget {
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
+              ),
+              const SizedBox(height: 24),
+              SecondaryButton(
+                label: 'Sair do app',
+                icon: Icons.logout,
+                expand: true,
+                onPressed: () => _signOut(context),
               ),
             ],
           ),

@@ -8,6 +8,10 @@ class AppColors {
   // Marca.
   static const Color primary = Colors.brown;
   static const Color secondary = Color(0xFF8D6E63);
+  static const Color verseCardStart = Color(0xFF123F34);
+  static const Color verseCardEnd = Color(0xFF254F41);
+  static const Color verseCardForeground = Color(0xFFF8F5E9);
+  static const Color verseCardMuted = Color(0xFFBBD1C5);
 
   // Feedback.
   static const Color success = Color(0xFF2E7D32);

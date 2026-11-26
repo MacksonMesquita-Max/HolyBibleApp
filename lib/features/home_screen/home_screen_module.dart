@@ -20,7 +20,10 @@ class HomeScreenModule {
 
   final GetDailyVerseUseCase getDailyVerseUseCase;
 
-  HomePage buildHomePage() {
-    return HomePage(getDailyVerseUseCase: getDailyVerseUseCase);
+  HomePage buildHomePage({required String userName}) {
+    return HomePage(
+      getDailyVerseUseCase: getDailyVerseUseCase,
+      userName: userName,
+    );
   }
 }

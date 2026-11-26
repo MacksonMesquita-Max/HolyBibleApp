@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/router/app_router.dart';
+import '../../../../shared/formatters/portuguese_date_formatter.dart';
+import '../../../../shared/widgets/cards/page_header_card.dart';
 import '../../application/use_cases/get_daily_verse_use_case.dart';
 import '../widgets/daily_verse_card.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({required this.getDailyVerseUseCase, super.key});
+  const HomePage({
+    required this.getDailyVerseUseCase,
+    required this.userName,
+    super.key,
+  });
 
   final GetDailyVerseUseCase getDailyVerseUseCase;
+  final String userName;
 
-  void _signOut(BuildContext context) {
-    Navigator.of(
-      context,
-    ).pushNamedAndRemoveUntil(AppRouter.loginRoute, (route) => false);
+  String get _firstName {
+    final trimmedName = userName.trim();
+    if (trimmedName.isEmpty) {
+      return 'Visitante';
+    }
+
+    return trimmedName.split(RegExp(r'\s+')).first;
   }
 
   @override
@@ -23,13 +32,13 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DailyVerseCard(getDailyVerseUseCase: getDailyVerseUseCase),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () => _signOut(context),
-              icon: const Icon(Icons.logout),
-              label: const Text('Sair do app'),
+            PageHeaderCard(
+              eyebrow: PortugueseDateFormatter.format(DateTime.now()),
+              title: 'Bom dia, $_firstName.',
+              subtitle: 'Reserve um momento para a Palavra hoje.',
             ),
+            const SizedBox(height: 24),
+            DailyVerseCard(getDailyVerseUseCase: getDailyVerseUseCase),
           ],
         ),
       ),

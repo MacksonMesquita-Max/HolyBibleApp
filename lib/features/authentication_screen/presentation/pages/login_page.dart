@@ -11,9 +11,14 @@ import '../../application/dto/login_request.dart';
 import '../../application/use_cases/sign_in_with_email_use_case.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({required this.signInUseCase, super.key});
+  const LoginPage({
+    required this.signInUseCase,
+    required this.onAuthenticated,
+    super.key,
+  });
 
   final SignInUseCase signInUseCase;
+  final ValueChanged<String> onAuthenticated;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -44,15 +49,14 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => _isSubmitting = true);
 
     try {
+      final fullName = _fullNameController.text.trim();
       await widget.signInUseCase.execute(
-        LoginRequest(
-          fullName: _fullNameController.text,
-          password: _passwordController.text,
-        ),
+        LoginRequest(fullName: fullName, password: _passwordController.text),
       );
 
       if (!mounted) return;
 
+      widget.onAuthenticated(fullName);
       Navigator.of(context).pushReplacementNamed(AppRouter.homeRoute);
     } on ArgumentError catch (error) {
       if (!mounted) return;

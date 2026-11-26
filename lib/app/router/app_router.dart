@@ -8,6 +8,7 @@ class AppRouter {
   AppRouter(this._dependencies);
 
   final AppDependencies _dependencies;
+  String? _currentUserName;
 
   static const String splashRoute = '/';
   static const String loginRoute = '/login';
@@ -31,7 +32,9 @@ class AppRouter {
         return _buildMainRoute(
           settings,
           AppNavigationDestination.home,
-          _dependencies.homeModule.buildHomePage,
+          () => _dependencies.homeModule.buildHomePage(
+            userName: _currentUserName ?? 'Visitante',
+          ),
         );
       case bibleRoute:
         return _buildMainRoute(
@@ -53,8 +56,11 @@ class AppRouter {
         );
       case loginRoute:
       default:
+        _currentUserName = null;
         return MaterialPageRoute<void>(
-          builder: (_) => _dependencies.authenticationModule.buildLoginPage(),
+          builder: (_) => _dependencies.authenticationModule.buildLoginPage(
+            onAuthenticated: (userName) => _currentUserName = userName,
+          ),
           settings: settings,
         );
     }
