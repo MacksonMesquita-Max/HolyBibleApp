@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/widgets/buttons/primary_button.dart';
 import '../../../../shared/widgets/inputs/search_input.dart';
 import '../../application/dto/passage_request.dart';
 import '../../application/use_cases/get_passage_use_case.dart';
@@ -7,22 +8,41 @@ import '../../domain/entities/bible_passage.dart';
 import '../../domain/exceptions/bible_api_exception.dart';
 
 class BiblePage extends StatefulWidget {
-  const BiblePage({required this.getPassageUseCase, super.key});
+  const BiblePage({
+    required this.getPassageUseCase,
+    this.initialReference,
+    super.key,
+  });
 
   final GetPassageUseCase getPassageUseCase;
+  final String? initialReference;
 
   @override
   State<BiblePage> createState() => _BiblePageState();
 }
 
 class _BiblePageState extends State<BiblePage> {
-  final TextEditingController _referenceController = TextEditingController(
-    text: 'John 3:16',
-  );
+  late final TextEditingController _referenceController;
 
   bool _isLoading = false;
   String? _errorMessage;
   BiblePassage? _passage;
+
+  @override
+  void initState() {
+    super.initState();
+    _referenceController = TextEditingController(
+      text: widget.initialReference ?? 'John 3:16',
+    );
+
+    if (widget.initialReference != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _search();
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -80,9 +100,10 @@ class _BiblePageState extends State<BiblePage> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                FilledButton(
+                PrimaryButton(
+                  label: 'Buscar',
                   onPressed: _isLoading ? null : _search,
-                  child: const Text('Buscar'),
+                  isLoading: _isLoading,
                 ),
               ],
             ),

@@ -20,7 +20,10 @@ class BibleScreenModule {
 
   final GetPassageUseCase getPassageUseCase;
 
-  BiblePage buildBiblePage() {
-    return BiblePage(getPassageUseCase: getPassageUseCase);
+  BiblePage buildBiblePage({String? initialReference}) {
+    return BiblePage(
+      getPassageUseCase: getPassageUseCase,
+      initialReference: initialReference,
+    );
   }
 }

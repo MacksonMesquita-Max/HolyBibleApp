@@ -24,7 +24,14 @@ class SearchScreenModule {
 
   final SearchContentUseCase searchContentUseCase;
 
-  SearchPage buildSearchPage() {
-    return SearchPage(searchContentUseCase: searchContentUseCase);
+  SearchPage buildSearchPage({
+    required void Function(String) onOpenBibleReference,
+    required void Function(int) onOpenHymn,
+  }) {
+    return SearchPage(
+      searchContentUseCase: searchContentUseCase,
+      onOpenBibleReference: onOpenBibleReference,
+      onOpenHymn: onOpenHymn,
+    );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../shared/widgets/buttons/icon_action_button.dart';
+import '../../../../shared/widgets/buttons/text_action_button.dart';
 
 class ScriptureVerseCard extends StatelessWidget {
   const ScriptureVerseCard({
@@ -172,10 +174,10 @@ class ScriptureVerseCard extends StatelessWidget {
         ),
         if (onRetry != null) ...[
           const SizedBox(height: 8),
-          TextButton.icon(
+          TextActionButton(
+            label: 'Tentar novamente',
+            icon: Icons.refresh,
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Tentar novamente'),
             style: TextButton.styleFrom(
               foregroundColor: AppColors.verseCardForeground,
             ),
@@ -190,10 +192,11 @@ class ScriptureVerseCard extends StatelessWidget {
     required String tooltip,
     required VoidCallback? onPressed,
   }) {
-    return IconButton(
-      onPressed: onPressed,
+    return IconActionButton(
+      icon: icon,
       tooltip: tooltip,
-      icon: Icon(icon, size: 20),
+      onPressed: onPressed,
+      iconSize: 20,
       style: IconButton.styleFrom(
         minimumSize: const Size(42, 42),
         padding: EdgeInsets.zero,

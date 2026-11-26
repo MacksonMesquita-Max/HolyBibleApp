@@ -7,6 +7,7 @@ class PrimaryButton extends StatelessWidget {
     this.icon,
     this.isLoading = false,
     this.expand = false,
+    this.style,
     super.key,
   });
 
@@ -15,6 +16,7 @@ class PrimaryButton extends StatelessWidget {
   final IconData? icon;
   final bool isLoading;
   final bool expand;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class PrimaryButton extends StatelessWidget {
 
     final button = FilledButton(
       onPressed: isLoading ? null : onPressed,
+      style: style,
       child: child,
     );
 

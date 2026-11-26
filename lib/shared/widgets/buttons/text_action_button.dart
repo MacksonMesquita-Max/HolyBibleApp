@@ -5,12 +5,14 @@ class TextActionButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
+    this.style,
     super.key,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +21,10 @@ class TextActionButton extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(icon),
         label: Text(label),
+        style: style,
       );
     }
 
-    return TextButton(onPressed: onPressed, child: Text(label));
+    return TextButton(onPressed: onPressed, style: style, child: Text(label));
   }
 }

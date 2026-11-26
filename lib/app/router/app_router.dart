@@ -41,13 +41,21 @@ class AppRouter {
         return _buildMainRoute(
           settings,
           AppNavigationDestination.bible,
-          _dependencies.bibleModule.buildBiblePage,
+          () => _dependencies.bibleModule.buildBiblePage(
+            initialReference: settings.arguments is String
+                ? settings.arguments as String
+                : null,
+          ),
         );
       case harpaRoute:
         return _buildMainRoute(
           settings,
           AppNavigationDestination.harpa,
-          _dependencies.harpaModule.buildHarpaPage,
+          () => _dependencies.harpaModule.buildHarpaPage(
+            initialHymnNumber: settings.arguments is int
+                ? settings.arguments as int
+                : null,
+          ),
         );
       case libraryRoute:
         return _buildMainRoute(
@@ -57,7 +65,18 @@ class AppRouter {
         );
       case searchRoute:
         return MaterialPageRoute<void>(
-          builder: (_) => _dependencies.searchModule.buildSearchPage(),
+          builder: (context) => _dependencies.searchModule.buildSearchPage(
+            onOpenBibleReference: (reference) {
+              Navigator.of(
+                context,
+              ).pushNamed<void>(bibleRoute, arguments: reference);
+            },
+            onOpenHymn: (number) {
+              Navigator.of(
+                context,
+              ).pushNamed<void>(harpaRoute, arguments: number);
+            },
+          ),
           settings: settings,
         );
       case loginRoute:

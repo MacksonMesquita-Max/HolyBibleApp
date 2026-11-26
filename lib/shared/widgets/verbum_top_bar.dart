@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'buttons/icon_action_button.dart';
+
 class VerbumTopBar extends StatelessWidget implements PreferredSizeWidget {
   const VerbumTopBar({
     required this.logoAsset,
@@ -44,10 +46,10 @@ class VerbumTopBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: IconButton(
-            onPressed: onSearch,
+          child: IconActionButton(
+            icon: Icons.search_rounded,
             tooltip: 'Buscar',
-            icon: const Icon(Icons.search_rounded),
+            onPressed: onSearch,
             style: IconButton.styleFrom(
               foregroundColor: theme.colorScheme.onSurfaceVariant,
               shape: RoundedRectangleBorder(

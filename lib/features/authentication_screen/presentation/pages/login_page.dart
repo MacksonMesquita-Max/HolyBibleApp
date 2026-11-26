@@ -7,6 +7,9 @@ import '../../../../app/constants/assets.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../core/utils/validators/full_name_validator.dart';
 import '../../../../core/utils/validators/password_validator.dart';
+import '../../../../shared/widgets/buttons/icon_action_button.dart';
+import '../../../../shared/widgets/buttons/primary_button.dart';
+import '../../../../shared/widgets/buttons/text_action_button.dart';
 import '../../application/dto/login_request.dart';
 import '../../application/use_cases/sign_in_with_email_use_case.dart';
 
@@ -204,48 +207,41 @@ class _LoginPageState extends State<LoginPage> {
                               hintText: 'Digite sua senha',
                               prefixIcon: Icons.lock_outline,
                               padding: layout.fieldPadding,
-                              suffixIcon: IconButton(
+                              suffixIcon: IconActionButton(
+                                icon: _obscurePassword
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                tooltip: _obscurePassword
+                                    ? 'Mostrar senha'
+                                    : 'Ocultar senha',
                                 onPressed: () {
                                   setState(() {
                                     _obscurePassword = !_obscurePassword;
                                   });
                                 },
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Align(
                             alignment: Alignment.center,
-                            child: TextButton(
+                            child: TextActionButton(
+                              label: 'Esqueci minha senha',
                               onPressed: () {
                                 _showMessage(
                                   'Recuperação de senha indisponível nesta fase.',
                                 );
                               },
-                              child: const Text('Esqueci minha senha'),
                             ),
                           ),
                           const SizedBox(height: 12),
                           SizedBox(
                             height: layout.actionHeight,
-                            width: double.infinity,
-                            child: FilledButton(
-                              onPressed: _isSubmitting ? null : _submit,
-                              child: _isSubmitting
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Text('Entrar no Verbum'),
+                            child: PrimaryButton(
+                              label: 'Entrar no Verbum',
+                              onPressed: _submit,
+                              isLoading: _isSubmitting,
+                              expand: true,
                             ),
                           ),
                           SizedBox(height: layout.sectionSpacing),
@@ -260,13 +256,13 @@ class _LoginPageState extends State<LoginPage> {
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
-                                TextButton(
+                                TextActionButton(
+                                  label: 'Criar conta grátis',
                                   onPressed: () {
                                     _showMessage(
                                       'Cadastro indisponível nesta fase mockada.',
                                     );
                                   },
-                                  child: const Text('Criar conta grátis'),
                                 ),
                               ],
                             ),

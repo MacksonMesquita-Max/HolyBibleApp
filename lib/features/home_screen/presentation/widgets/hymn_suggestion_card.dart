@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../../shared/widgets/buttons/icon_action_button.dart';
 import '../../application/use_cases/get_random_hymn_use_case.dart';
 import '../../domain/entities/random_hymn.dart';
 
@@ -157,11 +158,11 @@ class _HymnSuggestionCardState extends State<HymnSuggestionCard> {
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: _reload,
+                        IconActionButton(
+                          icon: Icons.refresh_rounded,
                           tooltip: 'Tentar novamente',
+                          onPressed: _reload,
                           visualDensity: VisualDensity.compact,
-                          icon: const Icon(Icons.refresh_rounded),
                         ),
                       ],
                     )
