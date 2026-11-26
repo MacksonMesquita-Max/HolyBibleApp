@@ -28,17 +28,17 @@ outra feature**.
 O aplicativo usa a tradução `kjv` (**King James Version**, em inglês).
 A Bible API identifica essa tradução como domínio público.
 
-O identificador padrão é declarado em um único lugar:
+O identificador da tradução padrão fica centralizado em
+`BibleApiEndpoints`:
 
 ``` dart
 // core/infrastructure/network/bible_api_endpoints.dart
 static const String defaultTranslation = 'kjv';
 ```
 
-> Observação: a camada de aplicação da feature `bible_screen` também
-> define `PassageRequest.defaultTranslation = 'kjv'`, que é o valor
-> padrão do formulário de busca. Hoje o mesmo identificador existe nos
-> dois pontos.
+> A `PassageRequest` também declara `defaultTranslation = 'kjv'` para o
+> caso de uso. O valor está repetido entre o endpoint e o DTO; manter
+> ambos sincronizados é uma pendência de centralização.
 
 ### 2.3. Limites e riscos
 
@@ -88,7 +88,7 @@ valores especiais `OT` (Antigo Testamento) e `NT` (Novo Testamento).
 
 | Método | Endpoint gerado | Consumido por |
 |---|---|---|
-| `passage(reference)` | `/{reference}` | `bible_screen` |
+| `passage(reference)` | `/{reference}` | `bible_screen`, `search_screen` |
 | `randomVerse(translation, {bookIds})` | `/data/{t}/random[/{ids}]` | `home_screen` |
 | `translations()` | `/data` | --- (declarado) |
 | `books(translation)` | `/data/{translation}` | --- (declarado) |
@@ -110,49 +110,34 @@ lib/
 │
 └── features/
     ├── bible_screen/                      # busca por referência
-    │   ├── bible_screen_module.dart
-    │   ├── application/
-    │   │   ├── dto/passage_request.dart
-    │   │   ├── ports/bible_repository.dart
-    │   │   └── use_cases/get_passage_use_case.dart
-    │   ├── data/
-    │   │   ├── datasources/bible_remote_datasource.dart
-    │   │   ├── mappers/bible_passage_mapper.dart
-    │   │   ├── models/bible_passage_model.dart
-    │   │   ├── models/bible_verse_model.dart
-    │   │   └── repositories/bible_api_repository.dart
-    │   ├── domain/
-    │   │   ├── entities/bible_passage.dart
-    │   │   ├── entities/bible_verse.dart
-    │   │   └── exceptions/bible_api_exception.dart
+    │   ├── application/                   # PassageRequest e GetPassageUseCase
+    │   ├── data/                          # datasource, models, mapper e repository
+    │   ├── domain/                        # passagem, versículo e exceção
     │   └── presentation/pages/bible_page.dart
-    │
-    └── home_screen/                       # versículo do dia
-        ├── home_screen_module.dart
+    ├── home_screen/                       # versículo do dia e sugestão de hino
+    │   ├── application/                   # casos de uso e ports
+    │   ├── data/                          # datasources, models, mappers e repositories
+    │   ├── domain/                        # entidades e exceções
+    │   └── presentation/
+    │       ├── pages/home_page.dart
+    │       └── widgets/                   # cards da Home
+    └── search_screen/                     # atalhos de busca por referência
         ├── application/
-        │   ├── ports/daily_verse_repository.dart
-        │   └── use_cases/get_daily_verse_use_case.dart
-        ├── data/
-        │   ├── datasources/home_verse_remote_data_source.dart
-        │   ├── mappers/daily_verse_mapper.dart
-        │   ├── models/daily_verse_model.dart
-        │   └── repositories/remote_daily_verse_repository.dart
+        ├── data/                          # consulta às APIs e modelos de resultado
         ├── domain/
-        │   ├── entities/daily_verse.dart
-        │   └── exceptions/daily_verse_exception.dart
-        └── presentation/
-            ├── pages/home_page.dart
-            └── widgets/daily_verse_card.dart
+        └── presentation/pages/search_page.dart
 ```
 
 Regras que essa organização garante:
 
 1.  **Nenhuma URL solta em feature.** Toda rota vem de
     `BibleApiEndpoints`.
-2.  **Nenhuma feature importa outra feature.** `home_screen` e
-    `bible_screen` não se conhecem; cada uma tem seus próprios
-    repositórios, exceções e datasources.
-3.  **A composição acontece em `app/`**, via módulos e `AppDependencies`.
+2.  **Nenhuma feature importa arquivos internos de outra feature.**
+    `search_screen` consulta a Bible API e a Harpa API pelos endpoints
+    centrais e mantém seus próprios modelos de resultado; ela não chama
+    casos de uso nem repositórios de `bible_screen` ou `harpa_screen`.
+3.  **A composição e a navegação acontecem em `app/`**, via módulos,
+    `AppDependencies` e `AppRouter`.
 
 ## 5. Camada compartilhada --- `core/infrastructure/network/`
 
@@ -335,21 +320,40 @@ Diferenças que o model precisa absorver:
 `translationId`, `translationName` e expõe o getter `reference`
 (`"2 Crônicas 28:25"`).
 
-O `DailyVerseCard` resolve os três estados da tela:
+O `DailyVerseCard` resolve os estados do carregamento:
 
 -   **carregando** → `CircularProgressIndicator`;
 -   **erro** → ícone, mensagem e botão **"Tentar novamente"**;
--   **sucesso** → título "Versículo do dia", texto, referência, tradução
-    e o botão **"Mostrar outro versículo"**.
+-   **sucesso** → texto e referência do versículo.
 
-Cada novo toque em "outro versículo" cria um novo `Future` e chama o
-caso de uso novamente.
+O callback para recarregar é usado no estado de erro. A Home não oferece
+atualmente um botão de sucesso para solicitar outro versículo. O
+`ScriptureVerseCard` aceita callbacks de salvar e compartilhar, mas a
+Home ainda não os conecta.
 
-## 8. Fiação em `app/`
+## 8. Busca global como consumidora
+
+`search_screen` consulta a Bible API diretamente pelo endpoint central
+`BibleApiEndpoints.passage`, usando a tradução `kjv`. A feature só tenta
+consultar a Bíblia quando a pesquisa contém pelo menos um algarismo, como
+em `John 3:16`. Essa decisão é uma heurística para referências, não uma
+busca textual livre.
+
+O datasource da busca mantém modelos próprios para apresentar um atalho
+com a referência e a quantidade de versículos. Ao selecionar esse
+atalho, o `AppRouter` abre `bible_screen`, passa a referência como
+argumento e a tela da Bíblia executa sua própria consulta. A busca não
+importa nem reutiliza entidades, casos de uso ou repositórios internos
+de `bible_screen`.
+
+O fluxo completo e a integração paralela com a Harpa API estão em
+[`Docs/global_search.md`](global_search.md).
+
+## 9. Fiação em `app/`
 
 As features não se conhecem, então a composição fica no `app/`.
 
-### 8.1. Módulos
+### 9.1. Módulos
 
 Cada feature expõe um ponto de entrada público:
 
@@ -367,22 +371,27 @@ class BibleScreenModule {
 }
 ```
 
-O mesmo padrão vale para `HomeScreenModule` (`buildHomePage()`).
+O mesmo padrão vale para `HomeScreenModule` (`buildHomePage()`) e
+`SearchScreenModule` (`buildSearchPage()`).
 
-### 8.2. Injeção de dependência
+### 9.2. Injeção de dependência
 
 ``` dart
 factory AppDependencies.create() {
   return AppDependencies._(
+    appNavigationBarModule: AppNavigationBarModule.create(),
     authenticationModule: AuthenticationModule.create(),
     splashModule: SplashModule.create(),
     bibleModule: BibleScreenModule.create(),
     homeModule: HomeScreenModule.create(),
+    harpaModule: HarpaScreenModule.create(),
+    libraryModule: LibraryScreenModule.create(),
+    searchModule: SearchScreenModule.create(),
   );
 }
 ```
 
-### 8.3. Rotas
+### 9.3. Rotas
 
 O router só conhece o módulo, nunca a página diretamente:
 
@@ -399,9 +408,17 @@ case homeRoute:
 | `/` (`splashRoute`) | Splash (animação de entrada) |
 | `/login` (`loginRoute`) | Login |
 | `/home` (`homeRoute`) | Home com o versículo do dia |
-| `/bible` (`bibleRoute`) | Busca por referência |
+| `/bible` (`bibleRoute`) | Consulta por referência |
+| `/harpa` (`harpaRoute`) | Harpa Cristã |
+| `/library` (`libraryRoute`) | Biblioteca |
+| `/search` (`searchRoute`) | Busca global |
 
-## 9. Como adicionar um novo consumo
+As rotas `/home`, `/bible`, `/harpa` e `/library` usam o `AppShell`, que
+mantém a barra superior e a navegação inferior. Splash, login e busca não
+usam esse shell. A busca abre a Bíblia com uma referência inicial ou a
+Harpa com um número de hino por argumentos do router.
+
+## 10. Como adicionar um novo consumo
 
 Receita para plugar um endpoint em uma nova tela:
 
@@ -427,7 +444,7 @@ Receita para plugar um endpoint em uma nova tela:
 12. **`app/di/app_dependencies.dart`** --- registre o módulo.
 13. **`app/router/app_router.dart`** --- aponte a rota para o módulo.
 
-## 10. Tratamento de erros
+## 11. Tratamento de erros
 
 O padrão é sempre o mesmo:
 
@@ -454,12 +471,12 @@ Mensagens atuais:
 | Situação | Mensagem |
 |---|---|
 | Referência vazia | `Informe uma referência bíblica.` |
-| 404 na busca | `Referência não encontrada. Confira livro, capítulo e versículo.` |
-| 404 no aleatório | `Nenhum versículo disponível para esta tradução.` |
-| Falha de rede | `Não foi possível carregar o versículo. Verifique sua conexão.` |
+| 404 da API | Mensagem `error` fornecida pela API, prefixada com `Bible API:`; há mensagem genérica se o corpo não a informar |
+| Falha de rede na consulta de passagem | `Não foi possível consultar a Bíblia agora. Verifique sua conexão.` |
+| Falha de rede no versículo aleatório | `Não foi possível carregar o versículo. Verifique sua conexão.` |
 | Resposta vazia | `Resposta vazia da API.` |
 
-## 11. Requisitos de plataforma
+## 12. Requisitos de plataforma
 
 -   **Pacote `dio`** (já declarado no `pubspec.yaml`, `^5.9.0`). Nenhuma
     outra dependência é necessária.
@@ -474,23 +491,25 @@ Mensagens atuais:
 
 -   **iOS:** nenhuma permissão extra é necessária, pois a API usa HTTPS.
 
-## 12. Validação
+## 13. Validação
 
 Checagem estática:
 
 ``` shell
-dart analyze lib
+flutter analyze
 ```
 
 Teste manual do fluxo completo:
 
 1.  Abrir o app → splash → login.
 2.  Na home, o card deve carregar um versículo aleatório.
-3.  Tocar em "Mostrar outro versículo" deve trazer outro texto.
-4.  "Abrir a Bíblia" → buscar `John 3:16` deve retornar o texto em
+3.  Abrir a aba Bíblia na navegação inferior e buscar `John 3:16`; a tela
+    deve retornar o texto em
     inglês na King James Version.
-5.  Testar uma referência inexistente (ex.: `John 99:99`) para ver a
+4.  Testar uma referência inexistente (ex.: `John 99:99`) para ver a
     mensagem de 404.
+5.  Na busca global, procurar `John 3:16`, abrir o atalho bíblico e
+    confirmar que a tela da Bíblia carrega a referência.
 
 Também é possível validar a API isoladamente, sem o app:
 
@@ -499,7 +518,7 @@ curl "https://bible-api.com/John 3:16?translation=kjv"
 curl "https://bible-api.com/data/kjv/random"
 ```
 
-## 13. Limitações e próximos passos
+## 14. Limitações e próximos passos
 
 -   **Dependência de rede.** O app não funciona offline. Para uma Bíblia
     offline, o caminho é embarcar um dataset de domínio público
@@ -507,9 +526,10 @@ curl "https://bible-api.com/data/kjv/random"
 -   **Dataset completo não é baixado pela API.** O projeto oficial
     disponibiliza os dados para download; a API tem limite de uso e não
     deve ser usada como fonte de download.
--   **Cliente HTTP por feature.** Hoje `bible_screen` e `home_screen`
-    criam cada uma o seu próprio `DioClient`. Se surgir uma terceira,
-    vale criar um único cliente em `app/di/` e injetá-lo nos módulos.
+-   **Cliente HTTP por módulo.** Os módulos criam seus próprios
+    `DioClient`, inclusive a busca, que usa um cliente para cada API.
+    Se for necessário compartilhar configuração ou interceptors, a
+    composição pode ser centralizada em `app/di/`.
 -   **Exceções duplicadas por design.** `BibleApiException` e
     `DailyVerseException` são distintas porque features não se enxergam.
     Se um terceiro consumidor da Bible API aparecer, vale promover uma

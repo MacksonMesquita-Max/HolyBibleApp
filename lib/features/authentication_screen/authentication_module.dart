@@ -15,7 +15,10 @@ class AuthenticationModule {
 
   final SignInUseCase signInUseCase;
 
-  LoginPage buildLoginPage() {
-    return LoginPage(signInUseCase: signInUseCase);
+  LoginPage buildLoginPage({required void Function(String) onAuthenticated}) {
+    return LoginPage(
+      signInUseCase: signInUseCase,
+      onAuthenticated: onAuthenticated,
+    );
   }
 }

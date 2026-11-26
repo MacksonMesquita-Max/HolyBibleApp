@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_shell.dart';
 import '../../features/app_navigation_bar/app_navigation_bar_module.dart';
 import '../di/app_dependencies.dart';
 
@@ -7,6 +8,7 @@ class AppRouter {
   AppRouter(this._dependencies);
 
   final AppDependencies _dependencies;
+  String? _currentUserName;
 
   static const String splashRoute = '/';
   static const String loginRoute = '/login';
@@ -14,6 +16,7 @@ class AppRouter {
   static const String bibleRoute = '/bible';
   static const String harpaRoute = '/harpa';
   static const String libraryRoute = '/library';
+  static const String searchRoute = '/search';
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -27,52 +30,85 @@ class AppRouter {
           settings: settings,
         );
       case homeRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.homeModule.buildHomePage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.home,
-            ),
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.home,
+          () => _dependencies.homeModule.buildHomePage(
+            userName: _currentUserName ?? 'Visitante',
           ),
-          settings: settings,
         );
       case bibleRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.bibleModule.buildBiblePage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.bible,
-            ),
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.bible,
+          () => _dependencies.bibleModule.buildBiblePage(
+            initialReference: settings.arguments is String
+                ? settings.arguments as String
+                : null,
           ),
-          settings: settings,
         );
       case harpaRoute:
-        return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.harpaModule.buildHarpaPage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.harpa,
-            ),
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.harpa,
+          () => _dependencies.harpaModule.buildHarpaPage(
+            initialHymnNumber: settings.arguments is int
+                ? settings.arguments as int
+                : null,
           ),
-          settings: settings,
         );
       case libraryRoute:
+        return _buildMainRoute(
+          settings,
+          AppNavigationDestination.library,
+          _dependencies.libraryModule.buildLibraryPage,
+        );
+      case searchRoute:
         return MaterialPageRoute<void>(
-          builder: (context) => _dependencies.libraryModule.buildLibraryPage(
-            bottomNavigationBar: _buildBottomNavigationBar(
-              context,
-              AppNavigationDestination.library,
-            ),
+          builder: (context) => _dependencies.searchModule.buildSearchPage(
+            onOpenBibleReference: (reference) {
+              Navigator.of(
+                context,
+              ).pushNamed<void>(bibleRoute, arguments: reference);
+            },
+            onOpenHymn: (number) {
+              Navigator.of(
+                context,
+              ).pushNamed<void>(harpaRoute, arguments: number);
+            },
           ),
           settings: settings,
         );
       case loginRoute:
       default:
+        _currentUserName = null;
         return MaterialPageRoute<void>(
-          builder: (_) => _dependencies.authenticationModule.buildLoginPage(),
+          builder: (_) => _dependencies.authenticationModule.buildLoginPage(
+            onAuthenticated: (userName) => _currentUserName = userName,
+          ),
           settings: settings,
         );
     }
+  }
+
+  Route<void> _buildMainRoute(
+    RouteSettings settings,
+    AppNavigationDestination currentDestination,
+    Widget Function() pageBuilder,
+  ) {
+    return MaterialPageRoute<void>(
+      builder: (context) => AppShell(
+        body: pageBuilder(),
+        bottomNavigationBar: _buildBottomNavigationBar(
+          context,
+          currentDestination,
+        ),
+        onSearch: () {
+          Navigator.of(context).pushNamed<void>(searchRoute);
+        },
+      ),
+      settings: settings,
+    );
   }
 
   Widget _buildBottomNavigationBar(
